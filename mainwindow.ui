@@ -33,7 +33,7 @@
     <property name="title">
      <string>&amp;Settings</string>
     </property>
-    <addaction name="action_SettingsComPort"/>
+    <addaction name="action_Configure"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Settings"/>
@@ -44,12 +44,18 @@
     <string>&amp;Exit</string>
    </property>
   </action>
-  <action name="action_SettingsComPort">
+  <action name="action_Configure">
+   <property name="icon">
+    <iconset resource="Images.qrc">
+     <normaloff>:/Icons/settings.png</normaloff>:/Icons/settings.png</iconset>
+   </property>
    <property name="text">
-    <string>&amp;SettingsComPort</string>
+    <string>&amp;Configure</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="Images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -20,7 +20,7 @@ public:
 private slots:
     void on_action_Exit_triggered();
 
-    void on_action_SettingsComPort_triggered();
+    void on_action_Configure_triggered();
 
 private:
     Ui::MainWindow *ui;

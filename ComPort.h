@@ -1,30 +1,34 @@
 #ifndef COMPORT
 #define COMPORT
 #include <QString>
+#include <QList>
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 
 class ComPort
 {
-public:
     struct SettingsComPort {
         QString name;
         qint32 baudRate;
-        QString stringBaudRate;
+        //QString stringBaudRate;
         QSerialPort::DataBits dataBits;
-        QString stringDataBits;
+        //QString stringDataBits;
         QSerialPort::Parity parity;
-        QString stringParity;
+        //QString stringParity;
         QSerialPort::StopBits stopBits;
-        QString stringStopBits;
+        //QString stringStopBits;
         QSerialPort::FlowControl flowControl;
-        QString stringFlowControl;
+        //QString stringFlowControl;
         //bool localEchoEnabled;
     };
+
+    SettingsComPort m_SettingsCom;
+
 
 
 public:
     ComPort();
+
 };
 
 #endif // COMPORT

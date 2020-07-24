@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     m_SettingsCom = new SettingComDialog;
+    //m_SettingsCom->setWindowIcon(:/);
 
 }
 
@@ -22,7 +23,8 @@ void MainWindow::on_action_Exit_triggered()
     this->close();
 }
 
-void MainWindow::on_action_SettingsComPort_triggered()
+
+void MainWindow::on_action_Configure_triggered()
 {
     m_SettingsCom->show();
 }
