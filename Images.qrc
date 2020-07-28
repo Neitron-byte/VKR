@@ -1,9 +1,9 @@
 <RCC>
-    <qresource prefix="/Icons">
-        <file>application-exit.png</file>
-        <file>clear.png</file>
-        <file>connect.png</file>
-        <file>disconnect.png</file>
-        <file>settings.png</file>
+    <qresource prefix="/Icon">
+        <file>Pictures/application-exit.png</file>
+        <file>Pictures/clear.png</file>
+        <file>Pictures/connect.png</file>
+        <file>Pictures/disconnect.png</file>
+        <file>Pictures/settings.png</file>
     </qresource>
 </RCC>

@@ -12,6 +12,7 @@ class SettingComDialog : public QDialog
 {
     Q_OBJECT
     QList<QString> m_ListComPorts;
+
     ComPort* m_ComCal;
     ComPort* m_ComVol;
 
@@ -25,6 +26,12 @@ public:
     void InitialParity();
     void InitialStopBits();
     void InitialFlowControl();
+
+
+
+private slots:
+    void on_ApplyButton_Cal_clicked();
+
 
 private:
     Ui::SettingComDialog *ui;

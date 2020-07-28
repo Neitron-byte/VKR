@@ -47,7 +47,7 @@
   <action name="action_Configure">
    <property name="icon">
     <iconset resource="Images.qrc">
-     <normaloff>:/Icons/settings.png</normaloff>:/Icons/settings.png</iconset>
+     <normaloff>:/Icon/Pictures/settings.png</normaloff>:/Icon/Pictures/settings.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Configure</string>

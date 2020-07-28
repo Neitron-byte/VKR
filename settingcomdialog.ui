@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Images.qrc">
-    <normaloff>:/Icons/settings.png</normaloff>:/Icons/settings.png</iconset>
+    <normaloff>:/Icon/Pictures/settings.png</normaloff>:/Icon/Pictures/settings.png</iconset>
   </property>
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">
@@ -151,16 +151,22 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QPushButton" name="ApplyButton_Cal">
           <property name="text">
            <string>Apply</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="CleanButton_Cal">
-          <property name="text">
-           <string>Clean</string>
           </property>
          </widget>
         </item>
@@ -290,16 +296,22 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_15">
         <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QPushButton" name="ApplyVoltButton_Volt">
           <property name="text">
            <string>Apply</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="CleanVoltButton_Volt">
-          <property name="text">
-           <string>Clean</string>
           </property>
          </widget>
         </item>
