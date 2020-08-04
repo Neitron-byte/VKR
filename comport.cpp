@@ -41,4 +41,9 @@ void ComPort::setFlowControl(qint32 flow)
     qDebug()<<m_SettingsCom.flowControl;
 }
 
+QString ComPort::getName()
+{
+    return m_SettingsCom.name;
+}
+
 

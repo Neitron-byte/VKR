@@ -7,7 +7,6 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     SearchComPorts(); //Обнаружение COM-портов
     //Add in view
     InitialComPorts();
@@ -20,7 +19,8 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
     m_ComCal = new ComPort();
     m_ComVol = new ComPort();
 
-}
+
+  }
 
 SettingComDialog::~SettingComDialog()
 {
@@ -33,6 +33,15 @@ void SettingComDialog::SearchComPorts()
 {
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         m_ListComPorts .append(info.portName());
+    }
+    if(m_ListComPorts.isEmpty()){
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle("Warning");
+        msgBox.setInformativeText("WARNING!\nCOM-ports were not found.\nPlease check the hardware connection.");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
     }
 }
 
@@ -110,6 +119,33 @@ void SettingComDialog::InitialFlowControl()
     ui->FlowControlBox_Volt->addItem(tr("XON/XOFF"), QSerialPort::SoftwareControl);
 }
 
+void SettingComDialog::SetEnabledCal(bool b)
+{
+    ui->SetComBox_Cal->setEnabled(b);
+    ui->BoudrateBox_Cal->setEnabled(b);
+    ui->DataBitsBox_Cal->setEnabled(b);
+    ui->DataBitsBox_Cal->setEnabled(b);
+    ui->ParityBox_Cal->setEnabled(b);
+    ui->StopBitsBox_Cal->setEnabled(b);
+    ui->FlowControlBox_Cal->setEnabled(b);
+}
+
+void SettingComDialog::SetEnabledVolt(bool b)
+{
+    ui->SetComBox_Volt->setEnabled(b);
+    ui->BoudrateBox_Volt->setEnabled(b);
+    ui->DataBitsBox_Volt->setEnabled(b);
+    ui->DataBitsBox_Volt->setEnabled(b);
+    ui->ParityBox_Volt->setEnabled(b);
+    ui->StopBitsBox_Volt->setEnabled(b);
+    ui->FlowControlBox_Volt->setEnabled(b);
+}
+
+//void SettingComDialog::showStatus(QString message)
+//{
+//    m_status->showMessage(message);
+//}
+
 
 
 void SettingComDialog::on_ApplyButton_Cal_clicked()
@@ -121,18 +157,105 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
     m_ComCal->setStopBits(ui->StopBitsBox_Cal->currentText().toInt());
     m_ComCal->setFlowControl(ui->FlowControlBox_Cal->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
 
-    if(ui->SetComBox_Volt->count() > 0){
-        ui->SetComBox_Volt->clear();
-    }
+//    if(!m_ApplyCom){
+//    if(ui->SetComBox_Volt->count() > 0){
+//        ui->SetComBox_Volt->clear();
+//    }
 
-    if(!m_ListComPorts.isEmpty()){
-        for (const auto& Com : m_ListComPorts) {
-            if(Com != ui->SetComBox_Cal->currentText()){
-                ui->SetComBox_Volt->addItem(Com);
-            }
-        }
-    }
-
+//    if(!m_ListComPorts.isEmpty()){
+//        for (const auto& Com : m_ListComPorts) {
+//            if(Com != ui->SetComBox_Cal->currentText()){
+//                ui->SetComBox_Volt->addItem(Com);
+//            }
+//        }
+//    }
+//    m_ApplyCom = true;
+//    }
+   // showStatus(tr("Connected to %1").arg(m_ComCal->getName()));
+    SetEnabledCal(false);
 }
 
 
+
+void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
+{
+    m_ComVol->setName(ui->SetComBox_Volt->currentText());
+    m_ComVol->setBoudRate(ui->BoudrateBox_Volt->currentText().toInt());
+    m_ComVol->setDataBits(ui->DataBitsBox_Volt->currentText().toInt());
+    m_ComVol->setParity(ui->ParityBox_Volt->itemData(ui->ParityBox_Cal->currentIndex()).toInt());
+    m_ComVol->setStopBits(ui->StopBitsBox_Volt->currentText().toInt());
+    m_ComVol->setFlowControl(ui->FlowControlBox_Volt->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
+
+
+
+    SetEnabledVolt(false);
+}
+
+void SettingComDialog::on_pushButton_Edit_Cal_clicked()
+{
+    SetEnabledCal(true);
+}
+
+void SettingComDialog::on_pushButton_EditVol_clicked()
+{
+    SetEnabledVolt(true);
+}
+
+//void SettingComDialog::ModifiListComVolt()
+//{
+
+
+//}
+
+//void SettingComDialog::ModifiListComCal()
+//{
+
+//}
+
+//void SettingComDialog::on_SetComBox_Cal_currentIndexChanged(const QString &arg1)
+//{
+//    qDebug()<< "Change Cal";
+//    if(ui->SetComBox_Volt->count() > 1){
+//     ui->SetComBox_Volt->clear();
+//    }
+//    if(!m_ListComPorts.isEmpty()){
+//        ui->SetComBox_Volt->clear();
+//        for (const auto& Com : m_ListComPorts) {
+//            if(Com != arg1){
+//                ui->SetComBox_Volt->addItem(Com);
+//            }
+//        }
+//    }
+//}
+
+//void SettingComDialog::on_SetComBox_Volt_currentIndexChanged(const QString &arg2)
+//{
+//    qDebug()<< "Change Volt";
+//    if(ui->SetComBox_Cal->count() > 1){
+//     ui->SetComBox_Cal->clear();
+//    }
+//    if(!m_ListComPorts.isEmpty()){
+//        ui->SetComBox_Cal->clear();
+//        for (const auto& Com : m_ListComPorts) {
+//            if(Com != arg2){
+//                ui->SetComBox_Cal->addItem(Com);
+//            }
+//        }
+//    }
+//}
+
+void SettingComDialog::on_SetComBox_Cal_editTextChanged(const QString &arg1)
+{
+        qDebug()<< "Change Cal";
+        if(ui->SetComBox_Volt->count() > 0){
+         ui->SetComBox_Volt->clear();
+        }
+        if(!m_ListComPorts.isEmpty()){
+            ui->SetComBox_Volt->clear();
+            for (const auto& Com : m_ListComPorts) {
+                if(Com != arg1){
+                    ui->SetComBox_Volt->addItem(Com);
+                }
+            }
+        }
+}

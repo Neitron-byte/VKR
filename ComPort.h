@@ -35,6 +35,9 @@ public:
     void setStopBits(qint32);
     void setFlowControl(qint32);
 
+    QString getName();
+
+
 };
 
 #endif // COMPORT
