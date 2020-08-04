@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "settingcomdialog.h"
+#include <QToolBar>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -11,6 +12,7 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
     SettingComDialog* m_SettingsCom;
 
 public:
