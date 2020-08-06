@@ -37,6 +37,7 @@ public:
 
     QString getName();
 
+    SettingsComPort setting();
 
 };
 

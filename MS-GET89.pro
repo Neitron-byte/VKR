@@ -18,16 +18,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     comport.cpp \
+    devicedialog.cpp \
     main.cpp \
     mainwindow.cpp \
     settingcomdialog.cpp
 
 HEADERS += \
     ComPort.h \
+    devicedialog.h \
     mainwindow.h \
     settingcomdialog.h
 
 FORMS += \
+    devicedialog.ui \
     mainwindow.ui \
     settingcomdialog.ui
 

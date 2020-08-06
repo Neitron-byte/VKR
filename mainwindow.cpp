@@ -8,12 +8,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     m_SettingsCom = new SettingComDialog;
-    //m_SettingsCom->setWindowIcon(:/);
+    m_DeviceDialog = new DeviceDialog;
 
 }
 
 MainWindow::~MainWindow()
 {
+    delete m_SettingsCom;
+    delete m_DeviceDialog;
     delete ui;
 }
 
@@ -28,3 +30,9 @@ void MainWindow::on_action_Configure_triggered()
 {
     m_SettingsCom->show();
 }
+
+void MainWindow::on_action_Devices_triggered()
+{
+    m_DeviceDialog->show();
+}
+

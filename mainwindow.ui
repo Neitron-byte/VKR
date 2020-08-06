@@ -34,6 +34,7 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="action_Configure"/>
+    <addaction name="action_Devices"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Settings"/>
@@ -50,6 +51,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_Configure"/>
+   <addaction name="action_Devices"/>
    <addaction name="action_Exit"/>
   </widget>
   <action name="action_Exit">
@@ -68,6 +70,15 @@
    </property>
    <property name="text">
     <string>&amp;Configure</string>
+   </property>
+  </action>
+  <action name="action_Devices">
+   <property name="icon">
+    <iconset resource="Images.qrc">
+     <normaloff>:/Icon/Pictures/Device.png</normaloff>:/Icon/Pictures/Device.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Devices</string>
    </property>
   </action>
  </widget>

@@ -37,6 +37,8 @@ public:
     void SetEnabledCal(bool);
     void SetEnabledVolt(bool);
     bool CheckApply();
+    QString getNameComCal();
+    QString getNameComVal();
 
 private slots:
     void on_ApplyButton_Cal_clicked();
@@ -49,6 +51,10 @@ private slots:
 
 private:
     Ui::SettingComDialog *ui;
+
+    // QWidget interface
+public slots:
+    //virtual void setVisible(bool visible);
 };
 
 #endif // SETTINGCOMDIALOG_H

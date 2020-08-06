@@ -5,5 +5,6 @@
         <file>Pictures/connect.png</file>
         <file>Pictures/disconnect.png</file>
         <file>Pictures/settings.png</file>
+        <file>Pictures/Device.png</file>
     </qresource>
 </RCC>

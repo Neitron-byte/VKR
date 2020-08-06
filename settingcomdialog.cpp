@@ -10,6 +10,9 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
     m_ApplyCal = false;
     m_ApplyVol = false;
 
+    m_ComCal = new ComPort();
+    m_ComVol = new ComPort();
+
     SearchComPorts(); //Обнаружение COM-портов
     //Add in view
     InitialComPorts();
@@ -19,17 +22,16 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
     InitialStopBits();
     InitialFlowControl();
 
-    m_ComCal = new ComPort();
-    m_ComVol = new ComPort();
+
 
 
   }
 
 SettingComDialog::~SettingComDialog()
 {
-    delete ui;
     delete m_ComCal;
     delete m_ComVol;
+    delete ui;
 }
 
 void SettingComDialog::SearchComPorts()
@@ -42,7 +44,7 @@ void SettingComDialog::SearchComPorts()
 void SettingComDialog::InitialComPorts()
 {
 
-    if(!m_ListComPorts.isEmpty()){
+        if(!m_ListComPorts.isEmpty()){
         for (const auto& Com : m_ListComPorts) {
             ui->SetComBox_Cal->addItem(Com);
 
@@ -160,13 +162,16 @@ bool SettingComDialog::CheckApply()
     return false;
 }
 
+QString SettingComDialog::getNameComCal()
+{
+    //qDebug()<<m_ComCal->getName();
+    return m_ComCal->getName();
+}
 
-
-//void SettingComDialog::showStatus(QString message)
-//{
-//    m_status->showMessage(message);
-//}
-
+QString SettingComDialog::getNameComVal()
+{
+    return m_ComVol->getName();
+}
 
 
 void SettingComDialog::on_ApplyButton_Cal_clicked()
@@ -238,5 +243,21 @@ void SettingComDialog::on_SetComBox_Cal_currentIndexChanged(const QString &arg1)
 }
 
 
+//void SettingComDialog::setVisible(bool visible)
+//{
+//    qDebug()<<visible;
+//    if(visible){
+//        if(m_ListComPorts.isEmpty()){
+//            QMessageBox msgBox;
+//            msgBox.setIcon(QMessageBox::Warning);
+//            msgBox.setWindowTitle("Warning");
+//            msgBox.setInformativeText("WARNING!\nCOM-ports were not found.\nPlease check the hardware connection.");
+//            msgBox.setStandardButtons(QMessageBox::Ok);
+//            msgBox.setDefaultButton(QMessageBox::Ok);
+//            msgBox.exec();
+//        }
+//    } else{
 
-
+//        InitialComPorts();
+//    }
+//}
