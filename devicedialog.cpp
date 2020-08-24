@@ -6,18 +6,16 @@ DeviceDialog::DeviceDialog(QWidget *parent) :
     ui(new Ui::DeviceDialog)
 {
     ui->setupUi(this);
-    m_SettingComPorts = new SettingComDialog;
+
     m_ComPortCal = new QSerialPort(this);
     m_ComPortVol = new QSerialPort(this);
-
-
-    addComPorts();
-
-}
+    AddModelCal();
+    AddModelVol();
+ }
 
 DeviceDialog::~DeviceDialog()
 {
-    delete m_SettingComPorts;
+
     delete ui;
 }
 
@@ -31,59 +29,38 @@ void DeviceDialog::AddModelVol()
     ui->comboBox_Device_Vol->addItem("Agilent 34420A");
 }
 
-void DeviceDialog::AddComCal()
-{
-    ui->comboBox_Com_Cal->addItem(m_SettingComPorts->getNameComCal());
-}
 
-void DeviceDialog::AddComVol()
-{
-    ui->comboBox_Com_Vol->addItem(m_SettingComPorts->getNameComVal());
-}
+//bool DeviceDialog::CheckComPorts()
+//{
 
-void DeviceDialog::addComPorts()
-{
-//    if(!m_SettingComPorts->getNameComCal().isEmpty() && !m_SettingComPorts->getNameComVal().isEmpty()){
-        AddComCal();
-        AddComVol();
-//    }
-//    else{
+//    if(m_NamePortCal != "" && m_NamePortVol != ""){
+//        return true;
+//    } else{
 //        QMessageBox msgBox;
 //        msgBox.setIcon(QMessageBox::Information);
 //        msgBox.setWindowTitle("Information");
 //        msgBox.setInformativeText("COM is not configured.\nPlease configure COM in the Tab Settings -> Configure.");
-//        //msgBox.setStandardButtons(QMessageBox::Ok);
+//        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
 //        msgBox.setDefaultButton(QMessageBox::Ok);
 //        msgBox.exec();
 //    }
+//}
 
+void DeviceDialog::SetNameComPort(QString ComCal, QString ComVal)
+{
+    m_NamePortCal = ComCal;
+    m_NamePortVol = ComVal;
+    ui->comboBox_Com_Cal->addItem(m_NamePortCal);
+    ui->comboBox_Com_Vol->addItem(m_NamePortVol);
 }
 
-bool DeviceDialog::CheckComPorts()
+
+
+
+
+
+
+void DeviceDialog::on_pushButton_Apply_Cal_clicked()
 {
-    qDebug()<<m_SettingComPorts->getNameComCal();
-    qDebug()<<m_SettingComPorts->getNameComVal();
-    if(m_SettingComPorts->getNameComCal() != "" && m_SettingComPorts->getNameComVal() != ""){
-        return true;
-    } else{
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Information);
-        msgBox.setWindowTitle("Information");
-        msgBox.setInformativeText("COM is not configured.\nPlease configure COM in the Tab Settings -> Configure.");
-        //msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.exec();
-    }
-}
 
-void DeviceDialog::setVisible(bool visible)
-{
-    qDebug()<<visible;
-    if(visible){
-
-        if(CheckComPorts()){
-        return;
-        }
-
-    }
 }

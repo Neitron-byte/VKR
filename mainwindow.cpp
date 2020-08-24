@@ -7,13 +7,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     m_SettingsCom = new SettingComDialog;
     m_DeviceDialog = new DeviceDialog;
+
+    connect (m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
 
 }
 
 MainWindow::~MainWindow()
 {
+
     delete m_SettingsCom;
     delete m_DeviceDialog;
     delete ui;
@@ -35,4 +39,5 @@ void MainWindow::on_action_Devices_triggered()
 {
     m_DeviceDialog->show();
 }
+
 

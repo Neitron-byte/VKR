@@ -23,8 +23,6 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
     InitialFlowControl();
 
 
-
-
   }
 
 SettingComDialog::~SettingComDialog()
@@ -164,7 +162,6 @@ bool SettingComDialog::CheckApply()
 
 QString SettingComDialog::getNameComCal()
 {
-    //qDebug()<<m_ComCal->getName();
     return m_ComCal->getName();
 }
 
@@ -187,6 +184,7 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
 
     m_ApplyCal = true;
     if(CheckApply()){
+        this->TransmitNameCom(m_ComCal->getName(),m_ComVol->getName());
         hide();
     }
 
@@ -206,6 +204,7 @@ void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
     SetEnabledVolt(false);
     m_ApplyVol = true;
     if(CheckApply()){
+        this->TransmitNameCom(m_ComCal->getName(),m_ComVol->getName());
         hide();
     }
 }
@@ -261,3 +260,7 @@ void SettingComDialog::on_SetComBox_Cal_currentIndexChanged(const QString &arg1)
 //        InitialComPorts();
 //    }
 //}
+
+
+
+

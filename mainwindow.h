@@ -28,7 +28,11 @@ private slots:
 
     void on_action_Devices_triggered();
 
+
 private:
     Ui::MainWindow *ui;
+
+public slots:
+
 };
 #endif // MAINWINDOW_H

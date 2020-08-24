@@ -2,7 +2,19 @@
 
 ComPort::ComPort()
 {
+    m_SettingsCom.name = "";
+    m_SettingsCom.baudRate =  QSerialPort::Baud9600;
+    m_SettingsCom.dataBits = QSerialPort::Data8;
+    m_SettingsCom.parity = QSerialPort::NoParity;
+    m_SettingsCom.stopBits = QSerialPort::OneStop;
+    m_SettingsCom.flowControl = QSerialPort::NoFlowControl;
 
+}
+
+ComPort::~ComPort()
+{
+    //delete m_SettingsCom;
+    qDebug()<<"DelCom";
 }
 
 void ComPort::setName(QString strName)

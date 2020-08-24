@@ -23,7 +23,6 @@ class SettingComDialog : public QDialog
     bool m_ApplyCal;
     bool m_ApplyVol;
 
-
 public:
     explicit SettingComDialog(QWidget *parent = nullptr);
     ~SettingComDialog();
@@ -52,9 +51,13 @@ private slots:
 private:
     Ui::SettingComDialog *ui;
 
-    // QWidget interface
+
 public slots:
     //virtual void setVisible(bool visible);
+
+signals:
+    void TransmitNameCom(QString,QString);
+
 };
 
 #endif // SETTINGCOMDIALOG_H

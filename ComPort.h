@@ -25,9 +25,9 @@ class ComPort
 
     SettingsComPort m_SettingsCom;
 
-
 public:
     ComPort();
+    ~ComPort();
     void setName(QString);
     void setBoudRate(qint32);
     void setDataBits(qint32);
