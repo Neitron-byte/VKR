@@ -10,9 +10,6 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
     m_ApplyCal = false;
     m_ApplyVol = false;
 
-    m_ComCal = new ComPort();
-    m_ComVol = new ComPort();
-
     SearchComPorts(); //Обнаружение COM-портов
     //Add in view
     InitialComPorts();
@@ -27,8 +24,7 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
 
 SettingComDialog::~SettingComDialog()
 {
-    delete m_ComCal;
-    delete m_ComVol;
+
     delete ui;
 }
 
@@ -162,29 +158,30 @@ bool SettingComDialog::CheckApply()
 
 QString SettingComDialog::getNameComCal()
 {
-    return m_ComCal->getName();
+    //return m_ComCal->getName();
 }
 
 QString SettingComDialog::getNameComVal()
 {
-    return m_ComVol->getName();
+    //return m_ComVol->getName();
 }
 
 
 void SettingComDialog::on_ApplyButton_Cal_clicked()
 {
-    m_ComCal->setName(ui->SetComBox_Cal->currentText());
-    m_ComCal->setBoudRate(ui->BoudrateBox_Cal->currentText().toInt());
-    m_ComCal->setDataBits(ui->DataBitsBox_Cal->currentText().toInt());
-    m_ComCal->setParity(ui->ParityBox_Cal->itemData(ui->ParityBox_Cal->currentIndex()).toInt());
-    m_ComCal->setStopBits(ui->StopBitsBox_Cal->currentText().toInt());
-    m_ComCal->setFlowControl(ui->FlowControlBox_Cal->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
+
+    SignalSetSettingsCal(ui->SetComBox_Cal->currentText(),
+                            ui->BoudrateBox_Cal->currentText().toInt(),
+                            ui->DataBitsBox_Cal->currentText().toInt(),
+                            ui->ParityBox_Cal->itemData(ui->ParityBox_Cal->currentIndex()).toInt(),
+                            ui->StopBitsBox_Cal->currentText().toInt(),
+                            ui->FlowControlBox_Cal->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
 
     SetEnabledCal(false);
 
     m_ApplyCal = true;
     if(CheckApply()){
-        this->TransmitNameCom(m_ComCal->getName(),m_ComVol->getName());
+        this->TransmitNameCom(ui->SetComBox_Cal->currentText(),ui->SetComBox_Volt->currentText());
         hide();
     }
 
@@ -194,17 +191,17 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
 
 void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
 {
-    m_ComVol->setName(ui->SetComBox_Volt->currentText());
-    m_ComVol->setBoudRate(ui->BoudrateBox_Volt->currentText().toInt());
-    m_ComVol->setDataBits(ui->DataBitsBox_Volt->currentText().toInt());
-    m_ComVol->setParity(ui->ParityBox_Volt->itemData(ui->ParityBox_Cal->currentIndex()).toInt());
-    m_ComVol->setStopBits(ui->StopBitsBox_Volt->currentText().toInt());
-    m_ComVol->setFlowControl(ui->FlowControlBox_Volt->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
+    SignalSetSettingsVol (ui->SetComBox_Volt->currentText(),
+                            ui->BoudrateBox_Volt->currentText().toInt(),
+                            ui->DataBitsBox_Volt->currentText().toInt(),
+                            ui->ParityBox_Volt->itemData(ui->ParityBox_Cal->currentIndex()).toInt(),
+                            ui->StopBitsBox_Volt->currentText().toInt(),
+                            ui->FlowControlBox_Volt->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
 
     SetEnabledVolt(false);
     m_ApplyVol = true;
     if(CheckApply()){
-        this->TransmitNameCom(m_ComCal->getName(),m_ComVol->getName());
+       this->TransmitNameCom(ui->SetComBox_Cal->currentText(),ui->SetComBox_Volt->currentText());
         hide();
     }
 }

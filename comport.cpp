@@ -1,6 +1,7 @@
 #include "ComPort.h"
 
-ComPort::ComPort()
+ComPort::ComPort(QObject *parent) :
+    QObject(parent)
 {
     m_SettingsCom.name = "";
     m_SettingsCom.baudRate =  QSerialPort::Baud9600;
@@ -9,12 +10,23 @@ ComPort::ComPort()
     m_SettingsCom.stopBits = QSerialPort::OneStop;
     m_SettingsCom.flowControl = QSerialPort::NoFlowControl;
 
+
 }
 
 ComPort::~ComPort()
 {
     //delete m_SettingsCom;
     qDebug()<<"DelCom";
+}
+
+void ComPort::SetSettingCom(QString Name, qint32 BdRate, qint32 Data, qint32 Par, qint32 Stop, qint32 Flow)
+{
+    m_SettingsCom.name = Name;
+    m_SettingsCom.baudRate = BdRate;
+    m_SettingsCom.dataBits = static_cast<QSerialPort::DataBits>(Data);
+    m_SettingsCom.parity = static_cast<QSerialPort::Parity>(Par);
+    m_SettingsCom.stopBits = static_cast<QSerialPort::StopBits>(Stop);
+    m_SettingsCom.flowControl = static_cast<QSerialPort::FlowControl>(Flow);
 }
 
 void ComPort::setName(QString strName)

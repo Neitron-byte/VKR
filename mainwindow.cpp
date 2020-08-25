@@ -11,13 +11,20 @@ MainWindow::MainWindow(QWidget *parent)
     m_SettingsCom = new SettingComDialog;
     m_DeviceDialog = new DeviceDialog;
 
-    connect (m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
+    m_ComPortCal = new ComPort;
+    m_ComPortVol = new ComPort;
 
+    connect (m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
+    connect(m_SettingsCom, SIGNAL(SignalSetSettingsCal(QString,qint32,qint32,qint32,qint32,qint32)),
+            m_ComPortCal,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
+    connect(m_SettingsCom, SIGNAL(SignalSetSettingsVol(QString,qint32,qint32,qint32,qint32,qint32)),
+            m_ComPortVol,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
 }
 
 MainWindow::~MainWindow()
 {
-
+    delete m_ComPortCal;
+    delete m_ComPortVol;
     delete m_SettingsCom;
     delete m_DeviceDialog;
     delete ui;

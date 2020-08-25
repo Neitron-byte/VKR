@@ -17,8 +17,6 @@ class SettingComDialog : public QDialog
     Q_OBJECT
     QList<QString> m_ListComPorts;
 
-    ComPort* m_ComCal;
-    ComPort* m_ComVol;
     bool m_ApplyCom;
     bool m_ApplyCal;
     bool m_ApplyVol;
@@ -57,7 +55,8 @@ public slots:
 
 signals:
     void TransmitNameCom(QString,QString);
-
+    void SignalSetSettingsCal (QString,qint32,qint32,qint32,qint32,qint32);
+    void SignalSetSettingsVol (QString,qint32,qint32,qint32,qint32,qint32);
 };
 
 #endif // SETTINGCOMDIALOG_H

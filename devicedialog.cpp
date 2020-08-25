@@ -55,11 +55,6 @@ void DeviceDialog::SetNameComPort(QString ComCal, QString ComVal)
 }
 
 
-
-
-
-
-
 void DeviceDialog::on_pushButton_Apply_Cal_clicked()
 {
 

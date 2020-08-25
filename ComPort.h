@@ -6,8 +6,9 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
 
-class ComPort
+class ComPort: public QObject
 {
+     Q_OBJECT
     struct SettingsComPort {
         QString name;
         qint32 baudRate;
@@ -25,16 +26,21 @@ class ComPort
 
     SettingsComPort m_SettingsCom;
 
+    QSerialPort m_ComPort;
+
+public slots:
+    void SetSettingCom(QString, qint32, qint32, qint32, qint32, qint32);
+
+
 public:
-    ComPort();
-    ~ComPort();
     void setName(QString);
     void setBoudRate(qint32);
     void setDataBits(qint32);
     void setParity(qint32);
     void setStopBits(qint32);
     void setFlowControl(qint32);
-
+    explicit ComPort(QObject *parent = 0);
+    ~ComPort();
     QString getName();
 
     SettingsComPort setting();

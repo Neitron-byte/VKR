@@ -16,6 +16,8 @@ class MainWindow : public QMainWindow
 
     SettingComDialog* m_SettingsCom;
     DeviceDialog* m_DeviceDialog;
+    ComPort* m_ComPortCal;
+    ComPort* m_ComPortVol;
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -33,6 +35,7 @@ private:
     Ui::MainWindow *ui;
 
 public slots:
+
 
 };
 #endif // MAINWINDOW_H
