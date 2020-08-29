@@ -22,11 +22,17 @@ ComPort::~ComPort()
 void ComPort::SetSettingCom(QString Name, qint32 BdRate, qint32 Data, qint32 Par, qint32 Stop, qint32 Flow)
 {
     m_SettingsCom.name = Name;
+    qDebug()<<m_SettingsCom.name;
     m_SettingsCom.baudRate = BdRate;
+    qDebug()<<m_SettingsCom.baudRate;
     m_SettingsCom.dataBits = static_cast<QSerialPort::DataBits>(Data);
+    qDebug()<<m_SettingsCom.baudRate;
     m_SettingsCom.parity = static_cast<QSerialPort::Parity>(Par);
+    qDebug()<<m_SettingsCom.parity;
     m_SettingsCom.stopBits = static_cast<QSerialPort::StopBits>(Stop);
+    qDebug()<<m_SettingsCom.stopBits;
     m_SettingsCom.flowControl = static_cast<QSerialPort::FlowControl>(Flow);
+    qDebug()<<m_SettingsCom.flowControl;
 }
 
 void ComPort::setName(QString strName)

@@ -5,6 +5,7 @@
 #include "settingcomdialog.h"
 #include "devicedialog.h"
 #include <QToolBar>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +19,8 @@ class MainWindow : public QMainWindow
     DeviceDialog* m_DeviceDialog;
     ComPort* m_ComPortCal;
     ComPort* m_ComPortVol;
+    QThread* m_ThreadCal;
+    QThread* m_ThreadVol;
 
 public:
     MainWindow(QWidget *parent = nullptr);
