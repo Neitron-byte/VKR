@@ -21,19 +21,23 @@ class DeviceDialog : public QDialog
     QString m_NamePortCal;
     QString m_NamePortVol;
 
+    bool m_ApplyCol;
+    bool m_ApplyVol;
 
-    QSerialPort* m_ComPortCal = nullptr;//Com порт калибратора
-    QSerialPort* m_ComPortVol = nullptr;//Com порт вольтметр
+    void CheckApply();
 
 public:
     explicit DeviceDialog(QWidget *parent = nullptr);
     ~DeviceDialog();
+    bool CheckComPorts();
+    QString getNameCal();
+    QString getNameVol();
 
 private:
     Ui::DeviceDialog *ui;
     void AddModelCal();//добавляем модели калибратора в представление
     void AddModelVol();//аналогично для вольтметра
-    //bool CheckComPorts();
+
 
     // QWidget interface
 public slots:
@@ -42,9 +46,20 @@ public slots:
 
 private slots:
 
-
     void on_pushButton_Apply_Cal_clicked();
+    void on_pushButton_Apply_Vol_clicked();
+
+    void on_pushButton_Discon_Cal_clicked();
+
+    void on_pushButton_Discon_Vol_clicked();
+
+signals:
+    void SignalOpenCal();
+    void SignalOpenVol();
+    void SignalCloseCal();
+    void SignalCloseVol();
 };
 
 
 #endif // DEVICEDIALOG_H
+

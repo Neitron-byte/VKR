@@ -5,6 +5,7 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
+#include <QMessageBox>
 
 class ComPort: public QObject
 {
@@ -26,11 +27,12 @@ class ComPort: public QObject
 
     SettingsComPort m_SettingsCom;
 
-    QSerialPort m_ComPort;
+    QSerialPort* m_serial;
 
 public slots:
     void SetSettingCom(QString, qint32, qint32, qint32, qint32, qint32);
-
+    void OpenSerial1();
+    void CloseSerial();
 
 public:
     void setName(QString);
@@ -45,6 +47,8 @@ public:
 
     SettingsComPort setting();
 
+signals:
+    void SignalStatusMessage(const QString);
 };
 
 #endif // COMPORT

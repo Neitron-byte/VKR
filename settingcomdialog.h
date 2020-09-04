@@ -43,7 +43,7 @@ private slots:
     void on_pushButton_Edit_Cal_clicked();
     void on_pushButton_EditVol_clicked();
     void on_SetComBox_Cal_currentIndexChanged(const QString &arg1);
-
+    void SlotCheckCom();
 
 
 private:

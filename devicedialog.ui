@@ -58,9 +58,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_Edit_Vol">
+         <widget class="QPushButton" name="pushButton_Discon_Vol">
           <property name="text">
-           <string>Edit</string>
+           <string>Disconnect</string>
           </property>
          </widget>
         </item>
@@ -113,9 +113,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_Edit_Cal">
+         <widget class="QPushButton" name="pushButton_Discon_Cal">
           <property name="text">
-           <string>Edit</string>
+           <string>Disconnect</string>
           </property>
          </widget>
         </item>

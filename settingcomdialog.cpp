@@ -10,9 +10,9 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
     m_ApplyCal = false;
     m_ApplyVol = false;
 
-    SearchComPorts(); //Обнаружение COM-портов
+    //SearchComPorts(); //Обнаружение COM-портов
     //Add in view
-    InitialComPorts();
+    //InitialComPorts();
     InitialBoudrate();
     InitialDataBits();
     InitialParity();
@@ -37,7 +37,7 @@ void SettingComDialog::SearchComPorts()
 
 void SettingComDialog::InitialComPorts()
 {
-
+        this->SearchComPorts();
         if(!m_ListComPorts.isEmpty()){
         for (const auto& Com : m_ListComPorts) {
             ui->SetComBox_Cal->addItem(Com);
@@ -236,6 +236,11 @@ void SettingComDialog::on_SetComBox_Cal_currentIndexChanged(const QString &arg1)
     }
     m_ApplyCom = true;
     }
+}
+
+void SettingComDialog::SlotCheckCom()
+{
+    this->InitialComPorts();
 }
 
 
