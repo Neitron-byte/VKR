@@ -21,12 +21,16 @@ SOURCES += \
     devicedialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    modeldate.cpp \
+    presentdate.cpp \
     settingcomdialog.cpp
 
 HEADERS += \
     ComPort.h \
     devicedialog.h \
     mainwindow.h \
+    modeldate.h \
+    presentdate.h \
     settingcomdialog.h
 
 FORMS += \

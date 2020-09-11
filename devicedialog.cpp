@@ -72,7 +72,7 @@ void DeviceDialog::SetNameComPort(QString ComCal, QString ComVal)
 
 void DeviceDialog::on_pushButton_Apply_Cal_clicked()
 {
-    this->SignalOpenCal();
+    emit SignalOpenCal();
     m_ModelCal = ui->comboBox_Device_Cal->currentText();
     ui->comboBox_Com_Cal->setEnabled(false);
     ui->comboBox_Device_Cal->setEnabled(false);
@@ -82,7 +82,7 @@ void DeviceDialog::on_pushButton_Apply_Cal_clicked()
 
 void DeviceDialog::on_pushButton_Apply_Vol_clicked()
 {
-    this->SignalOpenVol();
+    emit SignalOpenVol();
     m_ModelVol = ui->comboBox_Device_Vol->currentText();
     ui->comboBox_Com_Vol->setEnabled(false);
     ui->comboBox_Device_Vol->setEnabled(false);

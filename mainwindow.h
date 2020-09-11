@@ -4,11 +4,13 @@
 #include <QMainWindow>
 #include "settingcomdialog.h"
 #include "devicedialog.h"
+#include "presentdate.h"
 #include <QToolBar>
 #include <QThread>
 #include <QDate>
 #include <QTime>
 #include <QTimer>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,6 +36,9 @@ class MainWindow : public QMainWindow
     QTime time;
     QDate date;
 
+    //данные
+    PresentDate* m_data = nullptr;
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -47,10 +52,12 @@ private slots:
 
     void slot_set_Time(const QString);
     void slot_set_Date(const QString);
+    void slotSetData(bool);
 
 signals:
 
     void CheckCom();
+    void signalSendData(quint32,QString,QString,QString,bool,bool,quint32);
 
 
 private:

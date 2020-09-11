@@ -1,15 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QIntValidator>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow),
+      m_data(new PresentDate),
+      m_SettingsCom (new SettingComDialog),
+      m_DeviceDialog (new DeviceDialog)
 {
     ui->setupUi(this);
 
-    m_SettingsCom = new SettingComDialog;
-    m_DeviceDialog = new DeviceDialog;
+
 
     //Statusbar
     m_status1 = new QLabel;
@@ -60,6 +62,23 @@ MainWindow::MainWindow(QWidget *parent)
     date = QDate::currentDate();
     slot_set_Time(time.toString(Qt::SystemLocaleLongDate));
     slot_set_Date(date.toString(Qt::SystemLocaleLongDate));
+
+    //данные о поверяемом устр-ве
+    ui->comboBox_typeverdev->addItem(QStringLiteral("With squa func"));
+    ui->comboBox_typeverdev->addItem(QStringLiteral("With line func"));
+
+    ui->comboBox_typerefdev->addItem(QStringLiteral("With squa func"));
+    ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"));
+
+    QIntValidator IntVal(0,100,ui->lineEdit_Temp);
+    ui->lineEdit_Temp->setValidator(&IntVal);
+
+    QIntValidator IntVal2(0,100,ui->lineEdit_Volt);
+    ui->lineEdit_Volt->setValidator(&IntVal2);
+
+
+    connect(ui->pushButton_start,SIGNAL(clicked(bool)),this,SLOT(slotSetData(bool)));
+
 
 }
 
@@ -115,6 +134,28 @@ void MainWindow::slot_set_Time(const QString str)
 void MainWindow::slot_set_Date(const QString str)
 {
     ui->label_Date->setText(str);
+}
+
+void MainWindow::slotSetData(bool)
+{
+    quint32 Temp = ui->lineEdit_Temp->text().toInt();
+    QString Name = ui->lineEdit_fullname->text();
+    QString Model = ui->lineEdit_ver_dev->text();
+    QString Num = ui->lineEdit_Num->text();
+    bool TypeDev, TypeRefDev;
+    if(ui->comboBox_typeverdev == "With squa func"){
+        TypeDev = true;
+    } else{
+        TypeDev = false;
+    }
+    if(ui->comboBox_typerefdev == "With squa func"){
+        TypeRefDev = true;
+    } else{
+        TypeRefDev = false;
+    }
+    quint32 Volt = ui->lineEdit_Volt->text().toInt();
+    emit signalSendData(Temp,Name,Model,Num,TypeDev,TypeRefDev,Volt);
+
 }
 
 void MainWindow::StatusMessage1(const QString &message)
