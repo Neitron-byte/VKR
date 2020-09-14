@@ -2,16 +2,25 @@
 #include "ui_mainwindow.h"
 #include <QIntValidator>
 
+void MainWindow::SetLenght(int Num)
+{
+    ui->lineEdit_Temp->setMaxLength(2);
+    ui->lineEdit_Volt->setMaxLength(2);
+
+    ui->lineEdit_fullname->setMaxLength(Num);
+    ui->lineEdit_Num->setMaxLength(Num);
+    ui->lineEdit_ver_dev->setMaxLength(Num);
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow),
       m_data(new PresentDate),
       m_SettingsCom (new SettingComDialog),
-      m_DeviceDialog (new DeviceDialog)
+      m_DeviceDialog (new DeviceDialog),
+      m_ModeSelectDialog(new ModeSelectialog)
 {
     ui->setupUi(this);
-
-
 
     //Statusbar
     m_status1 = new QLabel;
@@ -35,11 +44,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_ThreadVol->start();
     qDebug() << m_ThreadVol->currentThreadId();
 
+    // Настройки COM
     connect (m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
     connect(m_SettingsCom, SIGNAL(SignalSetSettingsCal(QString,qint32,qint32,qint32,qint32,qint32)),
             m_ComPortCal,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
     connect(m_SettingsCom, SIGNAL(SignalSetSettingsVol(QString,qint32,qint32,qint32,qint32,qint32)),
             m_ComPortVol,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
+    connect(m_SettingsCom,SIGNAL(signalCOMWriteLog(QString)),this,SLOT(slotWriteLog(QString)));//в лог
 
 
     connect(this,SIGNAL(CheckCom()),m_SettingsCom,SLOT(SlotCheckCom()));
@@ -50,6 +61,9 @@ MainWindow::MainWindow(QWidget *parent)
     //OpenSerial
     connect(m_DeviceDialog,SIGNAL(SignalOpenCal()),m_ComPortCal,SLOT(OpenSerial1()));
     connect(m_DeviceDialog,SIGNAL(SignalOpenVol()),m_ComPortVol,SLOT(OpenSerial1()));
+    connect(m_DeviceDialog,SIGNAL(signalConnectWriteLog(QString)),this, SLOT(slotWriteLog(QString)));
+    connect(m_ComPortCal,SIGNAL(SignalStatusMessage(QString)),this, SLOT(slotWriteLog(QString)));
+    connect(m_ComPortVol,SIGNAL(SignalStatusMessage(QString)),this, SLOT(slotWriteLog(QString)));
 
     //CloseSerial
     connect(m_DeviceDialog,SIGNAL(SignalCloseCal()),m_ComPortCal,SLOT(CloseSerial()));
@@ -70,13 +84,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBox_typerefdev->addItem(QStringLiteral("With squa func"));
     ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"));
 
+    //Вылидаторы для полей температуры и напряжения
     QIntValidator IntVal(0,100,ui->lineEdit_Temp);
     ui->lineEdit_Temp->setValidator(&IntVal);
 
     QIntValidator IntVal2(0,100,ui->lineEdit_Volt);
     ui->lineEdit_Volt->setValidator(&IntVal2);
 
-    //данные.
+    //данные
     this->slotLockStart();
     ui->pushButton_2->setEnabled(false);
     connect(ui->pushButton_start,SIGNAL(clicked(bool)),this,SLOT(slotSetData(bool)));// сохранение данных в модели
@@ -84,8 +99,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_data,SIGNAL(signalInLog(QString)),this,SLOT(slotWriteLog(QString)));//запись в лог
     connect(m_data,SIGNAL(signalsLockStart()),this,SLOT(slotLockStart()));//блок виджетов
 
+    //разблокировка главного виджета после подключения
     connect(m_DeviceDialog,SIGNAL(signalUnLock()),this,SLOT(slotUnLockStart()));
 
+    //ограничение на количество cимволов в lineEdit
+    this->SetLenght(5);
 }
 
 MainWindow::~MainWindow()
@@ -178,7 +196,7 @@ void MainWindow::StatusMessage2(const QString &message)
 
 void MainWindow::slotWriteLog(const QString msg)
 {
-    ui->textEditLog->append(ui->label_Time->text() + ":" + msg);
+    ui->textEditLog->append(ui->label_Time->text() + " : " + msg);
 }
 
 void MainWindow::slotLockStart()

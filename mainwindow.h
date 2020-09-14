@@ -5,6 +5,7 @@
 #include "settingcomdialog.h"
 #include "devicedialog.h"
 #include "presentdate.h"
+#include "modeselectialog.h"
 #include <QToolBar>
 #include <QThread>
 #include <QDate>
@@ -20,9 +21,12 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    void SetLenght(int);
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
 
 private slots:
     void on_action_Exit_triggered();
@@ -48,6 +52,8 @@ private:
 
     SettingComDialog* m_SettingsCom = nullptr;//Окно настроек Com портов
     DeviceDialog* m_DeviceDialog = nullptr;//Окно подключения к приборам
+    ModeSelectialog* m_ModeSelectDialog = nullptr;//окно выбора операции поверки
+
     ComPort* m_ComPortCal= nullptr;//настройки COM калибратора
     ComPort* m_ComPortVol= nullptr;//настройки COM вольтметра
     QThread* m_ThreadCal= nullptr;//Поток для калибратора

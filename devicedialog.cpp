@@ -78,6 +78,7 @@ void DeviceDialog::on_pushButton_Apply_Cal_clicked()
     ui->comboBox_Com_Cal->setEnabled(false);
     ui->comboBox_Device_Cal->setEnabled(false);
     m_ApplyCol = true;
+    emit signalConnectWriteLog(m_ModelCal + " is connected");
     CheckApply();
 }
 
@@ -88,6 +89,7 @@ void DeviceDialog::on_pushButton_Apply_Vol_clicked()
     ui->comboBox_Com_Vol->setEnabled(false);
     ui->comboBox_Device_Vol->setEnabled(false);
     m_ApplyVol = true;
+    emit signalConnectWriteLog(m_ModelVol + " is connected");
     CheckApply();
 
 }

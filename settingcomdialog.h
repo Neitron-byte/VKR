@@ -57,6 +57,7 @@ signals:
     void TransmitNameCom(QString,QString);
     void SignalSetSettingsCal (QString,qint32,qint32,qint32,qint32,qint32);
     void SignalSetSettingsVol (QString,qint32,qint32,qint32,qint32,qint32);
+    void signalCOMWriteLog(const QString);
 };
 
 #endif // SETTINGCOMDIALOG_H

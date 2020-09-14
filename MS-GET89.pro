@@ -22,6 +22,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     modeldate.cpp \
+    modeselectialog.cpp \
     presentdate.cpp \
     settingcomdialog.cpp
 
@@ -30,12 +31,14 @@ HEADERS += \
     devicedialog.h \
     mainwindow.h \
     modeldate.h \
+    modeselectialog.h \
     presentdate.h \
     settingcomdialog.h
 
 FORMS += \
     devicedialog.ui \
     mainwindow.ui \
+    modeselectialog.ui \
     settingcomdialog.ui
 
 # Default rules for deployment.

@@ -48,9 +48,7 @@ private slots:
 
     void on_pushButton_Apply_Cal_clicked();
     void on_pushButton_Apply_Vol_clicked();
-
     void on_pushButton_Discon_Cal_clicked();
-
     void on_pushButton_Discon_Vol_clicked();
 
 signals:
@@ -59,6 +57,7 @@ signals:
     void SignalCloseCal();
     void SignalCloseVol();
     void signalUnLock();
+    void signalConnectWriteLog(const QString);
 };
 
 

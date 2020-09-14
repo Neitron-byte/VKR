@@ -169,6 +169,7 @@ QString SettingComDialog::getNameComVal()
 
 void SettingComDialog::on_ApplyButton_Cal_clicked()
 {
+    if (!m_ListComPorts.isEmpty()){
 
     SignalSetSettingsCal(ui->SetComBox_Cal->currentText(),
                             ui->BoudrateBox_Cal->currentText().toInt(),
@@ -178,11 +179,13 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
                             ui->FlowControlBox_Cal->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
 
     SetEnabledCal(false);
-
+    emit signalCOMWriteLog(ui->SetComBox_Cal->currentText() + " settings saved successfully");
     m_ApplyCal = true;
+
     if(CheckApply()){
         this->TransmitNameCom(ui->SetComBox_Cal->currentText(),ui->SetComBox_Volt->currentText());
         hide();
+    }
     }
 
 }
@@ -191,6 +194,7 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
 
 void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
 {
+    if (!m_ListComPorts.isEmpty()){
     SignalSetSettingsVol (ui->SetComBox_Volt->currentText(),
                             ui->BoudrateBox_Volt->currentText().toInt(),
                             ui->DataBitsBox_Volt->currentText().toInt(),
@@ -200,9 +204,11 @@ void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
 
     SetEnabledVolt(false);
     m_ApplyVol = true;
+    emit signalCOMWriteLog(ui->SetComBox_Volt->currentText() + " settings saved successfully");
     if(CheckApply()){
        this->TransmitNameCom(ui->SetComBox_Cal->currentText(),ui->SetComBox_Volt->currentText());
         hide();
+    }
     }
 }
 
