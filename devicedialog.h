@@ -58,6 +58,7 @@ signals:
     void SignalOpenVol();
     void SignalCloseCal();
     void SignalCloseVol();
+    void signalUnLock();
 };
 
 

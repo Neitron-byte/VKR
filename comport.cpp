@@ -48,6 +48,7 @@ void ComPort::OpenSerial1()
         SignalStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
                           .arg(m_SettingsCom.name).arg(m_SettingsCom.baudRate).arg(m_SettingsCom.dataBits)
                           .arg(m_SettingsCom.parity).arg(m_SettingsCom.stopBits).arg(m_SettingsCom.flowControl));
+
     } else {
         //QMessageBox::critical(tr("Error"), m_serial->errorString(),QMessageBox::Ok);
         SignalStatusMessage(tr("Open error"));

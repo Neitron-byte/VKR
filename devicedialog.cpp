@@ -4,6 +4,7 @@
 void DeviceDialog::CheckApply()
 {
     if(m_ApplyCol && m_ApplyVol){
+        emit signalUnLock();
         this->hide();
     }
 }

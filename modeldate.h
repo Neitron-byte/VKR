@@ -16,6 +16,15 @@ public:
     void setTypeRefDev(bool);
     void setVolt(quint32);
 
+    qint32 getTemp();
+    QString getName();
+    QString getModel();
+    QString getNumber();
+    bool getTypeDev();
+    bool getTypeRefDev();
+    quint32 getVolt();
+
+
 private:
 
     //Исходные данные

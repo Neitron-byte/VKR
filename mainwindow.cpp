@@ -76,9 +76,15 @@ MainWindow::MainWindow(QWidget *parent)
     QIntValidator IntVal2(0,100,ui->lineEdit_Volt);
     ui->lineEdit_Volt->setValidator(&IntVal2);
 
+    //данные.
+    this->slotLockStart();
+    ui->pushButton_2->setEnabled(false);
+    connect(ui->pushButton_start,SIGNAL(clicked(bool)),this,SLOT(slotSetData(bool)));// сохранение данных в модели
+    connect(this, SIGNAL(signalSendData(quint32,QString,QString,QString,bool,bool,quint32)),m_data,SLOT(setDate(quint32,QString,QString,QString,bool,bool,quint32)));
+    connect(m_data,SIGNAL(signalInLog(QString)),this,SLOT(slotWriteLog(QString)));//запись в лог
+    connect(m_data,SIGNAL(signalsLockStart()),this,SLOT(slotLockStart()));//блок виджетов
 
-    connect(ui->pushButton_start,SIGNAL(clicked(bool)),this,SLOT(slotSetData(bool)));
-
+    connect(m_DeviceDialog,SIGNAL(signalUnLock()),this,SLOT(slotUnLockStart()));
 
 }
 
@@ -138,22 +144,24 @@ void MainWindow::slot_set_Date(const QString str)
 
 void MainWindow::slotSetData(bool)
 {
+    qDebug()<<"SlotSendData";
     quint32 Temp = ui->lineEdit_Temp->text().toInt();
     QString Name = ui->lineEdit_fullname->text();
     QString Model = ui->lineEdit_ver_dev->text();
     QString Num = ui->lineEdit_Num->text();
     bool TypeDev, TypeRefDev;
-    if(ui->comboBox_typeverdev == "With squa func"){
+    if(ui->comboBox_typeverdev->currentText() == "With squa func"){
         TypeDev = true;
     } else{
         TypeDev = false;
     }
-    if(ui->comboBox_typerefdev == "With squa func"){
+    if(ui->comboBox_typerefdev->currentText() == "With squa func"){
         TypeRefDev = true;
     } else{
         TypeRefDev = false;
     }
     quint32 Volt = ui->lineEdit_Volt->text().toInt();
+    qDebug()<<"SlotSendData2";
     emit signalSendData(Temp,Name,Model,Num,TypeDev,TypeRefDev,Volt);
 
 }
@@ -168,6 +176,36 @@ void MainWindow::StatusMessage2(const QString &message)
     m_status2->setText(m_DeviceDialog->getNameVol()+" : "+message);
 }
 
+void MainWindow::slotWriteLog(const QString msg)
+{
+    ui->textEditLog->append(ui->label_Time->text() + ":" + msg);
+}
+
+void MainWindow::slotLockStart()
+{
+    ui->lineEdit_fullname->setEnabled(false);
+    ui->lineEdit_Num->setEnabled(false);
+    ui->lineEdit_Temp->setEnabled(false);
+    ui->lineEdit_ver_dev->setEnabled(false);
+    ui->lineEdit_Volt->setEnabled(false);
+    ui->comboBox_typerefdev->setEnabled(false);
+    ui->comboBox_typeverdev->setEnabled(false);
+    ui->pushButton_start->setEnabled(false);
+}
+
+void MainWindow::slotUnLockStart()
+{
+    ui->lineEdit_fullname->setEnabled(true);
+    ui->lineEdit_Num->setEnabled(true);
+    ui->lineEdit_Temp->setEnabled(true);
+    ui->lineEdit_ver_dev->setEnabled(true);
+    ui->lineEdit_Volt->setEnabled(true);
+    ui->comboBox_typerefdev->setEnabled(true);
+    ui->comboBox_typeverdev->setEnabled(true);
+    ui->pushButton_start->setEnabled(true);
+    ui->pushButton_2->setEnabled(true);
+}
+
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
@@ -176,5 +214,13 @@ void MainWindow::timerEvent(QTimerEvent *event)
     date = QDate::currentDate();
     slot_set_Time(time.toString(Qt::SystemLocaleLongDate));
     slot_set_Date(date.toString(Qt::SystemLocaleLongDate));
+
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+
+    this->slotUnLockStart();
+
 
 }

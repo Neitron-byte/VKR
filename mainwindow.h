@@ -20,25 +20,6 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    SettingComDialog* m_SettingsCom = nullptr;
-    DeviceDialog* m_DeviceDialog = nullptr;
-    ComPort* m_ComPortCal= nullptr;
-    ComPort* m_ComPortVol= nullptr;
-    QThread* m_ThreadCal= nullptr;
-    QThread* m_ThreadVol= nullptr;
-
-    QLabel *m_status1 = nullptr;
-    QLabel *m_status2 = nullptr;
-
-    //Таймер для времени
-    int m_timerinterval;
-    int m_idTimer;
-    QTime time;
-    QDate date;
-
-    //данные
-    PresentDate* m_data = nullptr;
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -54,20 +35,42 @@ private slots:
     void slot_set_Date(const QString);
     void slotSetData(bool);
 
+    void on_pushButton_2_clicked();
+
 signals:
 
     void CheckCom();
-    void signalSendData(quint32,QString,QString,QString,bool,bool,quint32);
+    void signalSendData(quint32,QString,QString,QString,bool,bool,quint32);//сигнал сохранения введенных данных
 
 
 private:
     Ui::MainWindow *ui;
 
+    SettingComDialog* m_SettingsCom = nullptr;//Окно настроек Com портов
+    DeviceDialog* m_DeviceDialog = nullptr;//Окно подключения к приборам
+    ComPort* m_ComPortCal= nullptr;//настройки COM калибратора
+    ComPort* m_ComPortVol= nullptr;//настройки COM вольтметра
+    QThread* m_ThreadCal= nullptr;//Поток для калибратора
+    QThread* m_ThreadVol= nullptr;//Поток для вольтметра
+
+    QLabel *m_status1 = nullptr;//статус подключения QSatusBar
+    QLabel *m_status2 = nullptr;//статус подключения QSatusBar
+
+    //Таймер для времени
+    int m_timerinterval;
+    int m_idTimer;
+    QTime time;
+    QDate date;
+
+    //данные
+    PresentDate* m_data = nullptr;
 
 public slots:
     void StatusMessage1(const QString &message);
     void StatusMessage2(const QString &message);
-
+    void slotWriteLog(const QString);
+    void slotLockStart();
+    void slotUnLockStart();
 
     // QObject interface
 protected:
