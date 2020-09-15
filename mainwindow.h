@@ -30,16 +30,13 @@ public:
 
 private slots:
     void on_action_Exit_triggered();
-
     void on_action_Configure_triggered();
-
     void on_action_Devices_triggered();
-
     void slot_set_Time(const QString);
     void slot_set_Date(const QString);
     void slotSetData(bool);
-
     void on_pushButton_2_clicked();
+    void slotViewModeDialog();
 
 signals:
 

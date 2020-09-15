@@ -98,6 +98,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(signalSendData(quint32,QString,QString,QString,bool,bool,quint32)),m_data,SLOT(setDate(quint32,QString,QString,QString,bool,bool,quint32)));
     connect(m_data,SIGNAL(signalInLog(QString)),this,SLOT(slotWriteLog(QString)));//запись в лог
     connect(m_data,SIGNAL(signalsLockStart()),this,SLOT(slotLockStart()));//блок виджетов
+    //сигнал на появление диалогового окна выбора операции поверки
+    connect(m_data,SIGNAL(signalNextAction()),this,SLOT(slotViewModeDialog()));
 
     //разблокировка главного виджета после подключения
     connect(m_DeviceDialog,SIGNAL(signalUnLock()),this,SLOT(slotUnLockStart()));
@@ -112,6 +114,7 @@ MainWindow::~MainWindow()
     delete m_ComPortVol;
     delete m_SettingsCom;
     delete m_DeviceDialog;
+    delete m_ModeSelectDialog;
 
     m_ThreadCal->quit();
     m_ThreadCal->wait();
@@ -240,5 +243,11 @@ void MainWindow::on_pushButton_2_clicked()
 
     this->slotUnLockStart();
 
+
+}
+
+void MainWindow::slotViewModeDialog()
+{
+    m_ModeSelectDialog->show();
 
 }

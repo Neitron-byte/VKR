@@ -18,6 +18,7 @@ public:
 signals:
     void signalInLog(const QString);
     void signalsLockStart();
+    void signalNextAction();
 
 public slots:
     void setDate(quint32,QString,QString,QString,bool,bool,quint32);

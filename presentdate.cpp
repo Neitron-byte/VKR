@@ -71,6 +71,8 @@ void PresentDate::setDate(quint32 temp, QString name, QString model, QString num
     if(CheckDate()){
         emit signalInLog("The data was successfully stored");
         emit signalsLockStart();
+        emit signalNextAction();
+
     }
 
 }
