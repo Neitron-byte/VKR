@@ -38,10 +38,12 @@ private slots:
     void on_pushButton_2_clicked();
     void slotViewModeDialog();
 
+    void on_doubleSpinBox_temp_valueChanged(double arg1);
+
 signals:
 
     void CheckCom();
-    void signalSendData(quint32,QString,QString,QString,bool,bool,quint32);//сигнал сохранения введенных данных
+    void signalSendData(double,QString,QString,QString,bool,bool,double);//сигнал сохранения введенных данных
 
 
 private:

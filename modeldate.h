@@ -8,34 +8,33 @@ class ModelDate
 public:
     ModelDate();
 
-    void setTemp(qint32);
+    void setTemp(double);
     void setName(QString);
     void setModel(QString);
     void setNumber(QString);
     void setTypeDev(bool);
     void setTypeRefDev(bool);
-    void setVolt(quint32);
+    void setVolt(double);
 
-    qint32 getTemp();
+    double getTemp();
     QString getName();
     QString getModel();
     QString getNumber();
     bool getTypeDev();
     bool getTypeRefDev();
-    quint32 getVolt();
+    double getVolt();
 
 
 private:
 
     //Исходные данные
-    quint32 m_temp; //температура
+    double m_temp; //температура
     QString m_fullname;//ФИО поверитель
-    QString m_model;//модель поверяемого прибора
+    QString m_model;//модель поверяемого преобразователя
     QString m_number;//заводской номер
-    bool m_typedev;//тип поверяемого прибора false - c лин. функ. преобразования
-    bool m_typerefdev;//тип эталонного прибора false - c лин. функ. преобразования
-    quint32 m_voltage;//номинальное напряжение
-
+    bool m_typedev;//тип поверяемого преобразователя false - c лин. функ. преобразования
+    bool m_typerefdev;//тип эталонного преобразователя false - c лин. функ. преобразования
+    double m_voltage;//номинальное напряжение
 
 };
 

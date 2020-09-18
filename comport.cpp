@@ -10,8 +10,6 @@ ComPort::ComPort(QObject *parent) :
     m_SettingsCom.stopBits = QSerialPort::OneStop;
     m_SettingsCom.flowControl = QSerialPort::NoFlowControl;
 
-    m_serial = new QSerialPort(this);
-
 }
 
 ComPort::~ComPort()
@@ -26,7 +24,7 @@ void ComPort::SetSettingCom(QString Name, qint32 BdRate, qint32 Data, qint32 Par
     m_SettingsCom.baudRate = BdRate;
     qDebug()<<m_SettingsCom.baudRate;
     m_SettingsCom.dataBits = static_cast<QSerialPort::DataBits>(Data);
-    qDebug()<<m_SettingsCom.baudRate;
+    qDebug()<<m_SettingsCom.dataBits;
     m_SettingsCom.parity = static_cast<QSerialPort::Parity>(Par);
     qDebug()<<m_SettingsCom.parity;
     m_SettingsCom.stopBits = static_cast<QSerialPort::StopBits>(Stop);
@@ -43,8 +41,9 @@ void ComPort::OpenSerial1()
     m_serial->setParity(m_SettingsCom.parity);
     m_serial->setStopBits(m_SettingsCom.stopBits);
     m_serial->setFlowControl(m_SettingsCom.flowControl);
+    qDebug()<< "Open serial";
     if(m_serial->open(QIODevice::ReadWrite)) {
-
+        qDebug()<< "Signal status Open";
         emit SignalStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
                           .arg(m_SettingsCom.name).arg(m_SettingsCom.baudRate).arg(m_SettingsCom.dataBits)
                           .arg(m_SettingsCom.parity).arg(m_SettingsCom.stopBits).arg(m_SettingsCom.flowControl));
@@ -60,7 +59,14 @@ void ComPort::CloseSerial()
 {
     if (m_serial->isOpen())
         m_serial->close();
-        SignalStatusMessage(tr("Disconnected"));
+    SignalStatusMessage(tr("Disconnected"));
+}
+
+void ComPort::CreateCom()
+{
+    m_serial = new QSerialPort();
+    qDebug()<<"Serial Creat ";
+    qDebug()<<m_serial->thread();
 }
 
 void ComPort::setName(QString strName)

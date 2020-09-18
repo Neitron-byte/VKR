@@ -22,7 +22,7 @@ PresentDate::~PresentDate()
     delete m_model;
 }
 
-void PresentDate::setDate(quint32 temp, QString name, QString model, QString num, bool sqdev, bool srefdev, quint32 volt)
+void PresentDate::setDate(double temp, QString name, QString model, QString num, bool sqdev, bool srefdev, double volt)
 {
     if(temp <= 0 || temp>=100){
         QMessageBox::information (0, "Information", "Please enter the correct current temperature.");

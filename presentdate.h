@@ -21,7 +21,7 @@ signals:
     void signalNextAction();
 
 public slots:
-    void setDate(quint32,QString,QString,QString,bool,bool,quint32);
+    void setDate(double,QString,QString,QString,bool,bool,double);
 
 private:
     ModelDate* m_model;//модель данных о поверяемом устройстве

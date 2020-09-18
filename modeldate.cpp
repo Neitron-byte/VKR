@@ -13,7 +13,7 @@ ModelDate::ModelDate():
 
 }
 
-void ModelDate::setTemp(qint32 temp)
+void ModelDate::setTemp(double temp)
 {
     m_temp = temp;
     qDebug()<<m_temp;
@@ -49,13 +49,13 @@ void ModelDate::setTypeRefDev(bool type)
     qDebug()<<m_typerefdev;
 }
 
-void ModelDate::setVolt(quint32 Volt)
+void ModelDate::setVolt(double Volt)
 {
     m_voltage = Volt;
     qDebug()<<m_voltage;
 }
 
-qint32 ModelDate::getTemp()
+double ModelDate::getTemp()
 {
     return m_temp;
 }
@@ -85,7 +85,8 @@ bool ModelDate::getTypeRefDev()
     return m_typerefdev;
 }
 
-quint32 ModelDate::getVolt()
+double ModelDate::getVolt()
 {
     return m_voltage;
+
 }

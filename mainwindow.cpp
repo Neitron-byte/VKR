@@ -4,8 +4,13 @@
 
 void MainWindow::SetLenght(int Num)
 {
-    ui->lineEdit_Temp->setMaxLength(2);
-    ui->lineEdit_Volt->setMaxLength(2);
+    ui->doubleSpinBox_temp->setMinimum(-10);
+    ui->doubleSpinBox_temp->setMaximum(40);
+    ui->doubleSpinBox_temp->setSingleStep(0.1);
+
+    ui->doubleSpinBox_Volt->setMinimum(0);
+    ui->doubleSpinBox_Volt->setMaximum(100);
+    ui->doubleSpinBox_temp->setSingleStep(0.1);
 
     ui->lineEdit_fullname->setMaxLength(Num);
     ui->lineEdit_Num->setMaxLength(Num);
@@ -29,20 +34,22 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusbar->addWidget(m_status2);
 
     //поток для калибратора
-    m_ThreadCal = new QThread(this);
+    m_ThreadCal = new QThread;
     m_ComPortCal = new ComPort;
     m_ComPortCal->moveToThread(m_ThreadCal);
+    connect(m_ThreadCal,SIGNAL(started()),m_ComPortCal,SLOT(CreateCom()));
     connect(m_ThreadCal, SIGNAL(finished()), m_ComPortCal, SLOT(deleteLater()));
     m_ThreadCal->start();
-    qDebug() << m_ThreadCal->currentThreadId();
+
 
     //поток для вольтметра
-    m_ThreadVol = new QThread(this);
+    m_ThreadVol = new QThread;
     m_ComPortVol = new ComPort;
     m_ComPortVol->moveToThread(m_ThreadVol);
+    connect(m_ThreadVol,SIGNAL(started()),m_ComPortVol,SLOT(CreateCom()));
     connect(m_ThreadVol, SIGNAL(finished()),m_ComPortVol,SLOT(deleteLater()));
     m_ThreadVol->start();
-    qDebug() << m_ThreadVol->currentThreadId();
+
 
     // Настройки COM
     connect (m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
@@ -85,17 +92,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"));
 
     //Вылидаторы для полей температуры и напряжения
-    QIntValidator IntVal(0,100,ui->lineEdit_Temp);
-    ui->lineEdit_Temp->setValidator(&IntVal);
+//    QIntValidator IntVal(0,100,ui->lineEdit_Temp);
+//    ui->lineEdit_Temp->setValidator(&IntVal);
 
-    QIntValidator IntVal2(0,100,ui->lineEdit_Volt);
-    ui->lineEdit_Volt->setValidator(&IntVal2);
+//    QIntValidator IntVal2(0,100,ui->lineEdit_Volt);
+//    ui->lineEdit_Volt->setValidator(&IntVal2);
 
     //данные
     this->slotLockStart();
     ui->pushButton_2->setEnabled(false);
     connect(ui->pushButton_start,SIGNAL(clicked(bool)),this,SLOT(slotSetData(bool)));// сохранение данных в модели
-    connect(this, SIGNAL(signalSendData(quint32,QString,QString,QString,bool,bool,quint32)),m_data,SLOT(setDate(quint32,QString,QString,QString,bool,bool,quint32)));
+    connect(this, SIGNAL(signalSendData(double,QString,QString,QString,bool,bool,double)),m_data,SLOT(setDate(double,QString,QString,QString,bool,bool,double)));
     connect(m_data,SIGNAL(signalInLog(QString)),this,SLOT(slotWriteLog(QString)));//запись в лог
     connect(m_data,SIGNAL(signalsLockStart()),this,SLOT(slotLockStart()));//блок виджетов
     //сигнал на появление диалогового окна выбора операции поверки
@@ -127,7 +134,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_action_Exit_triggered()
 {
+
     this->close();
+
 }
 
 
@@ -166,7 +175,7 @@ void MainWindow::slot_set_Date(const QString str)
 void MainWindow::slotSetData(bool)
 {
     qDebug()<<"SlotSendData";
-    quint32 Temp = ui->lineEdit_Temp->text().toInt();
+    double Temp = ui->doubleSpinBox_temp->value();
     QString Name = ui->lineEdit_fullname->text();
     QString Model = ui->lineEdit_ver_dev->text();
     QString Num = ui->lineEdit_Num->text();
@@ -181,7 +190,7 @@ void MainWindow::slotSetData(bool)
     } else{
         TypeRefDev = false;
     }
-    quint32 Volt = ui->lineEdit_Volt->text().toInt();
+    double Volt = ui->doubleSpinBox_Volt->value();
     qDebug()<<"SlotSendData2";
     emit signalSendData(Temp,Name,Model,Num,TypeDev,TypeRefDev,Volt);
 
@@ -199,6 +208,7 @@ void MainWindow::StatusMessage2(const QString &message)
 
 void MainWindow::slotWriteLog(const QString msg)
 {
+     qDebug()<< "slot Write";
     ui->textEditLog->append(ui->label_Time->text() + " : " + msg);
 }
 
@@ -206,9 +216,9 @@ void MainWindow::slotLockStart()
 {
     ui->lineEdit_fullname->setEnabled(false);
     ui->lineEdit_Num->setEnabled(false);
-    ui->lineEdit_Temp->setEnabled(false);
+    ui->doubleSpinBox_temp->setEnabled(false);
     ui->lineEdit_ver_dev->setEnabled(false);
-    ui->lineEdit_Volt->setEnabled(false);
+    ui->doubleSpinBox_Volt->setEnabled(false);
     ui->comboBox_typerefdev->setEnabled(false);
     ui->comboBox_typeverdev->setEnabled(false);
     ui->pushButton_start->setEnabled(false);
@@ -218,9 +228,9 @@ void MainWindow::slotUnLockStart()
 {
     ui->lineEdit_fullname->setEnabled(true);
     ui->lineEdit_Num->setEnabled(true);
-    ui->lineEdit_Temp->setEnabled(true);
+    ui->doubleSpinBox_temp->setEnabled(true);
     ui->lineEdit_ver_dev->setEnabled(true);
-    ui->lineEdit_Volt->setEnabled(true);
+    ui->doubleSpinBox_Volt->setEnabled(true);
     ui->comboBox_typerefdev->setEnabled(true);
     ui->comboBox_typeverdev->setEnabled(true);
     ui->pushButton_start->setEnabled(true);
@@ -249,5 +259,10 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::slotViewModeDialog()
 {
     m_ModeSelectDialog->show();
+
+}
+
+void MainWindow::on_doubleSpinBox_temp_valueChanged(double arg1)
+{
 
 }

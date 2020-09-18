@@ -103,7 +103,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_Temp"/>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_temp"/>
            </item>
           </layout>
          </item>
@@ -370,7 +370,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_Volt"/>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox_Volt"/>
            </item>
           </layout>
          </item>
@@ -527,17 +527,13 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>lineEdit_Temp</tabstop>
   <tabstop>lineEdit_fullname</tabstop>
   <tabstop>lineEdit_Num</tabstop>
   <tabstop>comboBox_typeverdev</tabstop>
   <tabstop>lineEdit_ver_dev</tabstop>
   <tabstop>comboBox_typerefdev</tabstop>
-  <tabstop>lineEdit_Volt</tabstop>
   <tabstop>pushButton_start</tabstop>
   <tabstop>pushButton_2</tabstop>
-  <tabstop>lineEdit_Temp_2</tabstop>
-  <tabstop>lineEdit_fullname_2</tabstop>
  </tabstops>
  <resources>
   <include location="Images.qrc"/>

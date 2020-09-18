@@ -33,6 +33,7 @@ public slots:
     void SetSettingCom(QString, qint32, qint32, qint32, qint32, qint32);
     void OpenSerial1();
     void CloseSerial();
+    void CreateCom();
 
 public:
     void setName(QString);
