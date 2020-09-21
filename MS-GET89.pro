@@ -3,7 +3,7 @@ QT       += core gui serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++11 c++14 c++17
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -17,6 +17,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    COM/calibratorcom.cpp \
+    COM/devicecom.cpp \
+    COM/voltmetercom.cpp \
     comport.cpp \
     devicedialog.cpp \
     main.cpp \
@@ -27,6 +30,9 @@ SOURCES += \
     settingcomdialog.cpp
 
 HEADERS += \
+    COM/calibratorcom.h \
+    COM/devicecom.h \
+    COM/voltmetercom.h \
     ComPort.h \
     devicedialog.h \
     mainwindow.h \
