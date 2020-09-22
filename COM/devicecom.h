@@ -7,25 +7,31 @@
 class DeviceCom // абстрактный класс
 {
 public:
-    DeviceCom(QString name = "", quint32 bR = 0, quint32 dB = 0, quint32 par = 0, quint32 stB = 0, quint32 fC = 0) :
-        m_name(name), m_baudRate(bR), m_dataBits(dB), m_parity(par), m_stopBits(stB), m_flowControl(fC)
+    DeviceCom(QString name = "", quint32 bR = 0, quint32 dB = 0, quint32 par = 0, quint32 stop = 0, quint32 fC = 0, QString name_device = "")
     {
-
+        m_SettingsCom.m_name = name;
+        m_SettingsCom.m_baudRate = bR,
+        m_SettingsCom.m_dataBits = dB;
+        m_SettingsCom.m_parity = par;
+        m_SettingsCom.m_stopBits = stop;
+        m_SettingsCom.m_flowControl = fC;
+        m_name_device = name_device;
     }
     virtual ~DeviceCom() = 0;
 
     //гетер имени COM
-    QString getName() const { return m_name; }
+    QString getName() const { return m_SettingsCom.m_name; }
 
     //метод для установки параметров COM
-    void SetParamCom(QString name,quint32 bR,quint32 dB, quint32 par, quint32 stop, quint32 Control)
+    void SetParamCom(QString name,quint32 bR,quint32 dB, quint32 par, quint32 stop, quint32 Control,QString name_device)
     {
-        m_name = name;
-        m_baudRate = bR,
-        m_dataBits = dB;
-        m_parity = par;
-        m_stopBits = stop;
-        m_flowControl = Control;
+        m_SettingsCom.m_name = name;
+        m_SettingsCom.m_baudRate = bR,
+        m_SettingsCom.m_dataBits = dB;
+        m_SettingsCom.m_parity = par;
+        m_SettingsCom.m_stopBits = stop;
+        m_SettingsCom.m_flowControl = Control;
+        m_name_device = name_device;
     }
 
     virtual void OpenSerial() = 0;
@@ -34,13 +40,18 @@ public:
 
 protected:
     //настройки COM
-    QString m_name;
-    quint32 m_baudRate;
-    quint32 m_dataBits;
-    quint32 m_parity;
-    quint32 m_stopBits;
-    quint32 m_flowControl;
+    struct SettingsComPort {
+        QString m_name;
+        quint32 m_baudRate;
+        quint32 m_dataBits;
+        quint32 m_parity;
+        quint32 m_stopBits;
+        quint32 m_flowControl;
+    };
+    //текущие настройки порта
+    SettingsComPort m_SettingsCom;
 
+    QString m_name_device;
 
 };
 

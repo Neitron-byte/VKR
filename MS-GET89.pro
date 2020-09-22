@@ -19,6 +19,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     COM/calibratorcom.cpp \
     COM/devicecom.cpp \
+    COM/presenterdevice.cpp \
     COM/voltmetercom.cpp \
     comport.cpp \
     devicedialog.cpp \
@@ -32,6 +33,7 @@ SOURCES += \
 HEADERS += \
     COM/calibratorcom.h \
     COM/devicecom.h \
+    COM/presenterdevice.h \
     COM/voltmetercom.h \
     ComPort.h \
     devicedialog.h \

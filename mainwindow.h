@@ -11,6 +11,8 @@
 #include <QDate>
 #include <QTime>
 #include <QTimer>
+#include "COM/presenterdevice.h"
+
 
 
 QT_BEGIN_NAMESPACE
@@ -69,6 +71,9 @@ private:
 
     //данные
     PresentDate* m_data = nullptr;
+
+    //презентер для работы с оборудованием
+    PresenterDevice* m_PresenterDevice = nullptr;
 
 public slots:
     void StatusMessage1(const QString &message);

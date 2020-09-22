@@ -13,11 +13,12 @@ class VoltmeterCom : DeviceCom
 {
 
 public:
-    VoltmeterCom(QString name = "", quint32 bR = 0, quint32 dB = 0, quint32 par = 0, quint32 stB = 0, quint32 fC = 0): DeviceCom(name,bR,dB,par,stB,fC)
+    VoltmeterCom(QString name = "Agilent 34420A", quint32 bR = 0, quint32 dB = 0, quint32 par = 0, quint32 stB = 0, quint32 fC = 0, QString name_device = ""): DeviceCom(name,bR,dB,par,stB,fC,name_device)
     {
         qDebug()<<"Volt Const";
         m_serial = new QSerialPort();
     }
+
     ~VoltmeterCom(){
         delete m_serial;
     }

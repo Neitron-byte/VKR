@@ -20,6 +20,7 @@ SettingComDialog::SettingComDialog(QWidget *parent) :
     InitialFlowControl();
 
 
+
   }
 
 SettingComDialog::~SettingComDialog()
@@ -28,16 +29,11 @@ SettingComDialog::~SettingComDialog()
     delete ui;
 }
 
-void SettingComDialog::SearchComPorts()
-{
-    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
-        m_ListComPorts .append(info.portName());
-    }
-}
+
 
 void SettingComDialog::InitialComPorts()
 {
-        this->SearchComPorts();
+
         if(!m_ListComPorts.isEmpty()){
         for (const auto& Com : m_ListComPorts) {
             ui->SetComBox_Cal->addItem(Com);

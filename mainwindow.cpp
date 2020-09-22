@@ -23,7 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
       m_data(new PresentDate),
       m_SettingsCom (new SettingComDialog),
       m_DeviceDialog (new DeviceDialog),
-      m_ModeSelectDialog(new ModeSelectialog)
+      m_ModeSelectDialog(new ModeSelectialog),
+      m_PresenterDevice(new PresenterDevice)
+
 {
     ui->setupUi(this);
 
@@ -33,34 +35,41 @@ MainWindow::MainWindow(QWidget *parent)
     m_status2 = new QLabel;
     ui->statusbar->addWidget(m_status2);
 
+    //вызов статического метода поиска компортов
+    m_PresenterDevice::SearchComPorts();
+
+
+
+
     //поток для калибратора
-    m_ThreadCal = new QThread;
-    m_ComPortCal = new ComPort;
-    m_ComPortCal->moveToThread(m_ThreadCal);
-    connect(m_ThreadCal,SIGNAL(started()),m_ComPortCal,SLOT(CreateCom()));
-    connect(m_ThreadCal, SIGNAL(finished()), m_ComPortCal, SLOT(deleteLater()));
-    m_ThreadCal->start();
+//    m_ThreadCal = new QThread;
+//    m_ComPortCal = new ComPort;
+//    m_ComPortCal->moveToThread(m_ThreadCal);
+//    connect(m_ThreadCal,SIGNAL(started()),m_ComPortCal,SLOT(CreateCom()));
+//    connect(m_ThreadCal, SIGNAL(finished()), m_ComPortCal, SLOT(deleteLater()));
+//    m_ThreadCal->start();
 
 
     //поток для вольтметра
-    m_ThreadVol = new QThread;
-    m_ComPortVol = new ComPort;
-    m_ComPortVol->moveToThread(m_ThreadVol);
-    connect(m_ThreadVol,SIGNAL(started()),m_ComPortVol,SLOT(CreateCom()));
-    connect(m_ThreadVol, SIGNAL(finished()),m_ComPortVol,SLOT(deleteLater()));
-    m_ThreadVol->start();
+//    m_ThreadVol = new QThread;
+//    m_ComPortVol = new ComPort;
+//    m_ComPortVol->moveToThread(m_ThreadVol);
+//    connect(m_ThreadVol,SIGNAL(started()),m_ComPortVol,SLOT(CreateCom()));
+//    connect(m_ThreadVol, SIGNAL(finished()),m_ComPortVol,SLOT(deleteLater()));
+//    m_ThreadVol->start();
 
 
-    // Настройки COM
+    // Сохранение настроек COM
     connect (m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
     connect(m_SettingsCom, SIGNAL(SignalSetSettingsCal(QString,qint32,qint32,qint32,qint32,qint32)),
             m_ComPortCal,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
     connect(m_SettingsCom, SIGNAL(SignalSetSettingsVol(QString,qint32,qint32,qint32,qint32,qint32)),
             m_ComPortVol,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
+
     connect(m_SettingsCom,SIGNAL(signalCOMWriteLog(QString)),this,SLOT(slotWriteLog(QString)));//в лог
 
-
-    connect(this,SIGNAL(CheckCom()),m_SettingsCom,SLOT(SlotCheckCom()));
+    //signal на запуск поиска доступных Com-портов.
+    //connect(this,SIGNAL(CheckCom()),m_SettingsCom,SLOT(SlotCheckCom()));
 
     connect(m_ComPortCal,SIGNAL(SignalStatusMessage(QString)),this, SLOT(StatusMessage1(QString)));
     connect(m_ComPortVol,SIGNAL(SignalStatusMessage(QString)),this, SLOT(StatusMessage2(QString)));

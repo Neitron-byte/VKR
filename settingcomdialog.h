@@ -15,7 +15,8 @@ class SettingComDialog;
 class SettingComDialog : public QDialog
 {
     Q_OBJECT
-    QList<QString> m_ListComPorts;
+
+
 
     bool m_ApplyCom;
     bool m_ApplyCal;
@@ -24,7 +25,7 @@ class SettingComDialog : public QDialog
 public:
     explicit SettingComDialog(QWidget *parent = nullptr);
     ~SettingComDialog();
-    void SearchComPorts();
+
     void InitialComPorts();
     void InitialBoudrate();
     void InitialDataBits();
