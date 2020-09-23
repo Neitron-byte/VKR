@@ -1,5 +1,9 @@
 #include "settingcomdialog.h"
 #include "ui_settingcomdialog.h"
+#include <QList>
+#include "COM/presenterdevice.h"
+#include "QDebug"
+#include "QSerialPort"
 
 SettingComDialog::SettingComDialog(QWidget *parent) :
     QDialog(parent),
@@ -31,15 +35,18 @@ SettingComDialog::~SettingComDialog()
 
 
 
-void SettingComDialog::InitialComPorts()
+void SettingComDialog::InitialComPorts(const QList<QString>& List)
 {
-
-        if(!m_ListComPorts.isEmpty()){
-        for (const auto& Com : m_ListComPorts) {
+        m_List = List;
+        for (const QString& com : m_List) {
+            qDebug() << com;
+        }
+        if(!List.isEmpty()){
+        for (const auto& Com : m_List) {
             ui->SetComBox_Cal->addItem(Com);
 
         }
-        for (const auto& Com : m_ListComPorts) {
+        for (const auto& Com : m_List) {
             if(Com != ui->SetComBox_Cal->currentText()){
             ui->SetComBox_Volt->addItem(Com);
             }
@@ -152,20 +159,9 @@ bool SettingComDialog::CheckApply()
     return false;
 }
 
-QString SettingComDialog::getNameComCal()
-{
-    //return m_ComCal->getName();
-}
-
-QString SettingComDialog::getNameComVal()
-{
-    //return m_ComVol->getName();
-}
-
-
 void SettingComDialog::on_ApplyButton_Cal_clicked()
 {
-    if (!m_ListComPorts.isEmpty()){
+    if (!m_List.isEmpty()){
 
     SignalSetSettingsCal(ui->SetComBox_Cal->currentText(),
                             ui->BoudrateBox_Cal->currentText().toInt(),
@@ -190,7 +186,7 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
 
 void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
 {
-    if (!m_ListComPorts.isEmpty()){
+    if (!m_List.isEmpty()){
     SignalSetSettingsVol (ui->SetComBox_Volt->currentText(),
                             ui->BoudrateBox_Volt->currentText().toInt(),
                             ui->DataBitsBox_Volt->currentText().toInt(),
@@ -228,9 +224,9 @@ void SettingComDialog::on_SetComBox_Cal_currentIndexChanged(const QString &arg1)
     if(ui->SetComBox_Volt->count() > 1){
      ui->SetComBox_Volt->clear();
     }
-    if(!m_ListComPorts.isEmpty()){
+    if(!m_List.isEmpty()){
         ui->SetComBox_Volt->clear();
-        for (const auto& Com : m_ListComPorts) {
+        for (const auto& Com : m_List) {
             if(Com != arg1){
                 ui->SetComBox_Volt->addItem(Com);
             }
@@ -240,30 +236,8 @@ void SettingComDialog::on_SetComBox_Cal_currentIndexChanged(const QString &arg1)
     }
 }
 
-void SettingComDialog::SlotCheckCom()
-{
-    this->InitialComPorts();
-}
 
 
-//void SettingComDialog::setVisible(bool visible)
-//{
-//    qDebug()<<visible;
-//    if(visible){
-//        if(m_ListComPorts.isEmpty()){
-//            QMessageBox msgBox;
-//            msgBox.setIcon(QMessageBox::Warning);
-//            msgBox.setWindowTitle("Warning");
-//            msgBox.setInformativeText("WARNING!\nCOM-ports were not found.\nPlease check the hardware connection.");
-//            msgBox.setStandardButtons(QMessageBox::Ok);
-//            msgBox.setDefaultButton(QMessageBox::Ok);
-//            msgBox.exec();
-//        }
-//    } else{
-
-//        InitialComPorts();
-//    }
-//}
 
 
 

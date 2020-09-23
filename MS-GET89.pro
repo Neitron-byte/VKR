@@ -21,7 +21,6 @@ SOURCES += \
     COM/devicecom.cpp \
     COM/presenterdevice.cpp \
     COM/voltmetercom.cpp \
-    comport.cpp \
     devicedialog.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     COM/devicecom.h \
     COM/presenterdevice.h \
     COM/voltmetercom.h \
-    ComPort.h \
     devicedialog.h \
     mainwindow.h \
     modeldate.h \

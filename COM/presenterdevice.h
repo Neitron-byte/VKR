@@ -14,10 +14,17 @@ class PresenterDevice : public QObject
 public:
     explicit PresenterDevice(QObject *parent = nullptr);
 
-    //статический метод для поиска доступных COM-портов
-    static void SearchComPorts();
+public slots:
+    //метод для поиска доступных COM-портов
+    void SearchComPorts();
+   // cлот для приема настроек Com от SettingsDialog
+    void slotSettingsSaveCal(QString,quint32,quint32,quint32,quint32,quint32);
+    void slotSettingsSaveVol(QString,quint32,quint32,quint32,quint32,quint32);
+
 
 signals:
+    //передача перечня портов в Settings Dialog
+    void signaListCom(const QList<QString>&);
 
 private:
     struct SettingsCurrentComPort {
@@ -28,9 +35,9 @@ private:
         quint32 m_stopBits;
         quint32 m_flowControl;
     };
-    //для временного хранения настроек COM
-    SettingsCurrentComPort m_SettingsCom1;
-    SettingsCurrentComPort m_SettingsCom2;
+    //для хранения настроек COM из представления
+    SettingsCurrentComPort m_SettingsComCal;
+    SettingsCurrentComPort m_SettingsComVolt;
 
     //калибратор
     QString m_name_calibrator;
@@ -41,7 +48,7 @@ private:
     DeviceCom* m_Voltmeter = nullptr;
 
     //список доступных COM-портов
-    static QList<QString> m_ListComPorts;
+    QList<QString> m_ListComPorts;
 
 };
 

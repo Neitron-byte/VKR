@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_ModeSelectDialog(new ModeSelectialog),
       m_PresenterDevice(new PresenterDevice)
 
+
 {
     ui->setupUi(this);
 
@@ -35,8 +36,22 @@ MainWindow::MainWindow(QWidget *parent)
     m_status2 = new QLabel;
     ui->statusbar->addWidget(m_status2);
 
-    //вызов статического метода поиска компортов
-    m_PresenterDevice::SearchComPorts();
+    //передача доступных портов из PresentDevice в Settings Dialog
+    connect(this,SIGNAL(CheckCom()),m_PresenterDevice,SLOT(SearchComPorts()));
+    connect(m_PresenterDevice,SIGNAL(signaListCom(const QList<QString>&)),m_SettingsCom,SLOT(InitialComPorts(const QList<QString>&)));
+
+    //сохранение настроек СOM портов из SettingsDialog в PresenterDevice
+    connect(m_SettingsCom,SIGNAL(SignalSetSettingsCal(QString,qint32,qint32,qint32,qint32,qint32)),
+            m_PresenterDevice,SLOT(slotSettingsSaveCal(QString,quint32,quint32,quint32,quint32,quint32)));
+    connect(m_SettingsCom,SIGNAL(SignalSetSettingsVol(QString,qint32,qint32,qint32,qint32,qint32)),
+            m_PresenterDevice,SLOT(slotSettingsSaveVol(QString,quint32,quint32,quint32,quint32,quint32)));
+
+    //передача Com портов из Setting в Dialog
+
+    connect(m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
+
+    //создание объектов устройств
+
 
 
 
@@ -58,33 +73,6 @@ MainWindow::MainWindow(QWidget *parent)
 //    connect(m_ThreadVol, SIGNAL(finished()),m_ComPortVol,SLOT(deleteLater()));
 //    m_ThreadVol->start();
 
-
-    // Сохранение настроек COM
-    connect (m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
-    connect(m_SettingsCom, SIGNAL(SignalSetSettingsCal(QString,qint32,qint32,qint32,qint32,qint32)),
-            m_ComPortCal,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
-    connect(m_SettingsCom, SIGNAL(SignalSetSettingsVol(QString,qint32,qint32,qint32,qint32,qint32)),
-            m_ComPortVol,SLOT(SetSettingCom(QString,qint32,qint32,qint32,qint32,qint32)));
-
-    connect(m_SettingsCom,SIGNAL(signalCOMWriteLog(QString)),this,SLOT(slotWriteLog(QString)));//в лог
-
-    //signal на запуск поиска доступных Com-портов.
-    //connect(this,SIGNAL(CheckCom()),m_SettingsCom,SLOT(SlotCheckCom()));
-
-    connect(m_ComPortCal,SIGNAL(SignalStatusMessage(QString)),this, SLOT(StatusMessage1(QString)));
-    connect(m_ComPortVol,SIGNAL(SignalStatusMessage(QString)),this, SLOT(StatusMessage2(QString)));
-
-    //OpenSerial
-    connect(m_DeviceDialog,SIGNAL(SignalOpenCal()),m_ComPortCal,SLOT(OpenSerial1()));
-    connect(m_DeviceDialog,SIGNAL(SignalOpenVol()),m_ComPortVol,SLOT(OpenSerial1()));
-    connect(m_DeviceDialog,SIGNAL(signalConnectWriteLog(QString)),this, SLOT(slotWriteLog(QString)));
-    connect(m_ComPortCal,SIGNAL(SignalStatusMessage(QString)),this, SLOT(slotWriteLog(QString)));
-    connect(m_ComPortVol,SIGNAL(SignalStatusMessage(QString)),this, SLOT(slotWriteLog(QString)));
-
-    //CloseSerial
-    connect(m_DeviceDialog,SIGNAL(SignalCloseCal()),m_ComPortCal,SLOT(CloseSerial()));
-    connect(m_DeviceDialog,SIGNAL(SignalCloseVol()),m_ComPortVol,SLOT(CloseSerial()));
-
     //TimeDate
     m_timerinterval = 1000;
     m_idTimer = startTimer(m_timerinterval);
@@ -99,13 +87,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->comboBox_typerefdev->addItem(QStringLiteral("With squa func"));
     ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"));
-
-    //Вылидаторы для полей температуры и напряжения
-//    QIntValidator IntVal(0,100,ui->lineEdit_Temp);
-//    ui->lineEdit_Temp->setValidator(&IntVal);
-
-//    QIntValidator IntVal2(0,100,ui->lineEdit_Volt);
-//    ui->lineEdit_Volt->setValidator(&IntVal2);
 
     //данные
     this->slotLockStart();
@@ -126,11 +107,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete m_ComPortCal;
-    delete m_ComPortVol;
+
     delete m_SettingsCom;
     delete m_DeviceDialog;
     delete m_ModeSelectDialog;
+    delete m_PresenterDevice;
 
     m_ThreadCal->quit();
     m_ThreadCal->wait();

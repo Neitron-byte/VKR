@@ -55,8 +55,7 @@ private:
     DeviceDialog* m_DeviceDialog = nullptr;//Окно подключения к приборам
     ModeSelectialog* m_ModeSelectDialog = nullptr;//окно выбора операции поверки
 
-    ComPort* m_ComPortCal= nullptr;//настройки COM калибратора
-    ComPort* m_ComPortVol= nullptr;//настройки COM вольтметра
+
     QThread* m_ThreadCal= nullptr;//Поток для калибратора
     QThread* m_ThreadVol= nullptr;//Поток для вольтметра
 
