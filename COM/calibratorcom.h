@@ -25,6 +25,7 @@ public:
 
     virtual void OpenSerial() override;
     virtual void CloseSerial() override;
+    virtual void CreatSerial() override;
 
 
 private:

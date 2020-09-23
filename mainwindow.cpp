@@ -47,7 +47,6 @@ MainWindow::MainWindow(QWidget *parent)
             m_PresenterDevice,SLOT(slotSettingsSaveVol(QString,quint32,quint32,quint32,quint32,quint32)));
 
     //передача Com портов из Setting в Dialog
-
     connect(m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
 
     //создание объектов устройств

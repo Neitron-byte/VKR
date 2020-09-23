@@ -24,8 +24,9 @@ public:
         delete m_serial;
     }
 
-    void OpenSerial() override;
-    void CloseSerial() override;
+    virtual void OpenSerial() override;
+    virtual void CloseSerial() override;
+    virtual void CreatSerial() override;
 
 private:
     QSerialPort* m_serial = nullptr;

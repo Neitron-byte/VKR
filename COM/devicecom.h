@@ -43,6 +43,7 @@ public:
 
     virtual void OpenSerial() = 0;
     virtual void CloseSerial() = 0;
+    virtual void CreatSerial() = 0;
     //
 
 protected:

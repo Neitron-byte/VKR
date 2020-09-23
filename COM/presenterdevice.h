@@ -3,13 +3,18 @@
 
 #include <QObject>
 #include "devicecom.h"
+#include "calibratorcom.h"
+#include "voltmetercom.h"
 #include <QList>
 #include <QString>
 
 class PresenterDevice : public QObject
 {
     Q_OBJECT
-
+    //метод для переноса СOM в калиборатор
+    void transferSettComToModelCal();
+    //метод для переноса СOM в вольтметр
+    void transferSettComToModelVol();
 
 public:
     explicit PresenterDevice(QObject *parent = nullptr);
@@ -20,8 +25,12 @@ public slots:
    // cлот для приема настроек Com от SettingsDialog
     void slotSettingsSaveCal(QString,quint32,quint32,quint32,quint32,quint32);
     void slotSettingsSaveVol(QString,quint32,quint32,quint32,quint32,quint32);
-
-
+    //создание объекта по сигналу от DeviceDialog
+    void slotCreatDeviceCom(const QString&, const QString&);
+    //слот на создание обертки
+    void creatDevice(const QString&);
+    //слот на создание Serial Port
+    void creatSerial();
 signals:
     //передача перечня портов в Settings Dialog
     void signaListCom(const QList<QString>&);
@@ -49,6 +58,10 @@ private:
 
     //список доступных COM-портов
     QList<QString> m_ListComPorts;
+
+    //поток
+    QThread* m_Thread= nullptr;
+    bool m_isCreatThread = false;
 
 };
 

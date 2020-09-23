@@ -11,3 +11,8 @@ void VoltmeterCom::CloseSerial()
 {
 
 }
+
+void VoltmeterCom::CreatSerial()
+{
+    m_serial = new QSerialPort;
+}

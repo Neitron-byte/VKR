@@ -73,8 +73,8 @@ void DeviceDialog::SetNameComPort(QString ComCal, QString ComVal)
 
 void DeviceDialog::on_pushButton_Apply_Cal_clicked()
 {
-    emit SignalOpenCal();
     m_ModelCal = ui->comboBox_Device_Cal->currentText();
+    emit signalCreatCalibrator(m_ModelCal,m_NamePortCal);
     ui->comboBox_Com_Cal->setEnabled(false);
     ui->comboBox_Device_Cal->setEnabled(false);
     m_ApplyCol = true;

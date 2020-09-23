@@ -15,15 +15,6 @@ class DeviceDialog : public QDialog
 {
     Q_OBJECT
 
-
-    QString m_ModelCal;//хранить модель калибратора
-    QString m_ModelVol;// хранить модель вольтметра
-    QString m_NamePortCal;
-    QString m_NamePortVol;
-
-    bool m_ApplyCol;
-    bool m_ApplyVol;
-
     void CheckApply();
 
 public:
@@ -52,12 +43,21 @@ private slots:
     void on_pushButton_Discon_Vol_clicked();
 
 signals:
-    void SignalOpenCal();
-    void SignalOpenVol();
-    void SignalCloseCal();
-    void SignalCloseVol();
+    //сигнал на создание объекта
+    void signalCreatCalibrator(const QString& ,const QString&);
+
     void signalUnLock();
     void signalConnectWriteLog(const QString);
+
+private:
+
+    QString m_ModelCal;//хранить модель калибратора
+    QString m_ModelVol;// хранить модель вольтметра
+    QString m_NamePortCal;
+    QString m_NamePortVol;
+
+    bool m_ApplyCol;
+    bool m_ApplyVol;
 };
 
 
