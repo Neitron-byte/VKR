@@ -49,8 +49,8 @@ private:
 
 signals:
     void TransmitNameCom(QString,QString);
-    void SignalSetSettingsCal (QString,qint32,qint32,qint32,qint32,qint32);
-    void SignalSetSettingsVol (QString,qint32,qint32,qint32,qint32,qint32);
+    void SignalSetSettingsCal (QString,uint,uint,uint,uint,uint);
+    void SignalSetSettingsVol (QString,uint,uint,uint,uint,uint);
     void signalCOMWriteLog(const QString);
 
 

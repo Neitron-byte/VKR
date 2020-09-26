@@ -4,34 +4,83 @@
 #include "QDebug"
 #include "QThread"
 
-void PresenterDevice::creatDevice(const QString& Model)
+void PresenterDevice::creatDevice(const int id)
 {
-    switch (Model) {
-    case :
-        m_Calibrator = new CalibratorCom;
-        this->transferSettComToModelCal();
+    switch (id) {
+    case 100:
+        qDebug()<<"Cal creat";
+        m_Calibrator = new CalibratorCom(m_SettingsComCal.m_name,m_SettingsComCal.m_baudRate,m_SettingsComCal.m_dataBits,
+                                         m_SettingsComCal.m_parity,m_SettingsComCal.m_stopBits,m_SettingsComCal.m_flowControl);
+        connect(m_Calibrator,SIGNAL(Error_(QString)),SIGNAL(signalWriteStatusCal(QString)));
         break;
-    case "Agilent 34420A":
-        m_Voltmeter = new VoltmeterCom;
-        this->transferSettComToModelVol();
+
+    case 200:
+        qDebug()<<"Vol creat";
+        m_Voltmeter = new VoltmeterCom(m_SettingsComVolt.m_name,m_SettingsComVolt.m_baudRate,m_SettingsComVolt.m_dataBits,
+                                       m_SettingsComVolt.m_parity,m_SettingsComVolt.m_stopBits,m_SettingsComVolt.m_flowControl);
+        connect(m_Voltmeter,SIGNAL(Error_(QString)),SIGNAL(signalWriteStatusVol(QString)));
         break;
+
     default:
         break;
+
     }
 
 }
 
-
-
-
-
-PresenterDevice::PresenterDevice(QObject *parent) : QObject(parent)
+void PresenterDevice::slotOpenComCal()
 {
-    m_name_calibrator = "";
-    m_name_voltmeter = "";
+    if(m_Calibrator->OpenSerial()){
+            emit signalWriteStatusCal(tr("Connected to %1 : %2, %3, %4, %5, %6")
+                                      .arg(m_SettingsComCal.m_name).arg(m_SettingsComCal.m_baudRate).arg(m_SettingsComCal.m_dataBits)
+                                      .arg(m_SettingsComCal.m_parity).arg(m_SettingsComCal.m_stopBits).arg(m_SettingsComCal.m_flowControl));
+    } else{
+
+        signalWriteStatusCal(tr("Open error"));
+    }
 
 
 }
+
+void PresenterDevice::slotOpenComVol()
+{
+    if(m_Voltmeter->OpenSerial()){
+        emit signalWriteStatusVol(tr("Connected to %1 : %2, %3, %4, %5, %6")
+                                  .arg(m_SettingsComVolt.m_name).arg(m_SettingsComVolt.m_baudRate).arg(m_SettingsComVolt.m_dataBits)
+                                  .arg(m_SettingsComVolt.m_parity).arg(m_SettingsComVolt.m_stopBits).arg(m_SettingsComVolt.m_flowControl));
+    } else{
+        signalWriteStatusVol(tr("Open error"));
+    }
+}
+
+void PresenterDevice::slotCloseComCal()
+{
+
+    if(m_Calibrator->CloseSerial()){
+        signalWriteStatusCal("Disconnect");
+    }
+    else{
+        signalWriteStatusCal("Serial is close");
+    }
+}
+
+void PresenterDevice::slotCloseComVol()
+{
+    if(m_Voltmeter->CloseSerial()){
+        signalWriteStatusVol("Disconnect");
+    }
+    else{
+        signalWriteStatusVol("Serial is close");
+    }
+}
+
+void PresenterDevice::slotCreatAlgoritm()
+{
+    emit SetPointDevice(m_Calibrator,m_Voltmeter);
+    //m_algoritm = new algoritm(m_Calibrator,m_Voltmeter);
+}
+
+
 
 void PresenterDevice::SearchComPorts()
 {
@@ -45,11 +94,15 @@ void PresenterDevice::SearchComPorts()
             qDebug() << com;
         }
     }
+    else{
+        qDebug()<<"List empty";
+    }
 
 }
 
-void PresenterDevice::slotSettingsSaveCal(QString name,quint32 bR,quint32 dB, quint32 par, quint32 stop, quint32 Control)
+void PresenterDevice::slotSettingsSaveCal(QString name,uint bR,uint dB, uint par, uint stop, uint Control)
 {
+    qDebug()<<"Save Cal";
     m_SettingsComCal.m_name = name;
     m_SettingsComCal.m_baudRate = bR;
     m_SettingsComCal.m_dataBits = dB;
@@ -58,8 +111,9 @@ void PresenterDevice::slotSettingsSaveCal(QString name,quint32 bR,quint32 dB, qu
     m_SettingsComCal.m_flowControl = Control;
 }
 
-void PresenterDevice::slotSettingsSaveVol(QString name,quint32 bR,quint32 dB, quint32 par, quint32 stop, quint32 Control)
+void PresenterDevice::slotSettingsSaveVol(QString name,uint bR,uint dB, uint par, uint stop, uint Control)
 {
+    qDebug()<<"Save Vol";
     m_SettingsComVolt.m_name = name;
     m_SettingsComVolt.m_baudRate = bR;
     m_SettingsComVolt.m_dataBits = dB;
@@ -68,27 +122,23 @@ void PresenterDevice::slotSettingsSaveVol(QString name,quint32 bR,quint32 dB, qu
     m_SettingsComVolt.m_flowControl = Control;
 }
 
-void PresenterDevice::slotCreatDeviceCom(const QString & ModelCal, const QString & NamePortCal)
+void PresenterDevice::slotSaveNameCal(const QString & NameCal)
 {
-
-    //cоздаем поток, если он не создан
-    if(!m_isCreatThread){
-        m_Thread = new QThread;
-        m_isCreatThread = true;
-    }
-
-    //создаем нужный объект по названию
-    this->creatDevice(ModelCal);
-
-    //помещаем обертку в поток
-    this->moveToThread(m_Thread);
-    //сигнал на создание Serial
-    connect(m_Thread,SIGNAL(started()),this,SLOT(creatSerial()));
-   // connect(m_ThreadCal, SIGNAL(finished()), m_ComPortCal, SLOT(deleteLater()));
-    //m_ThreadCal->start();
+    m_name_calibrator = NameCal;
 }
 
-void PresenterDevice::creatSerial()
+void PresenterDevice::slotSaveNameVol(const QString & NameVol)
 {
-    //m_Calibrator
+    m_name_voltmeter = NameVol;
 }
+
+void PresenterDevice::slotCreatDevice(const int id)
+{
+
+    //cоздаем нужное нам устройство
+    this->creatDevice(id);
+    qDebug()<<"ThreadPresenter "<<this->thread();
+
+}
+
+

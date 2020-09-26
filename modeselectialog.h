@@ -3,6 +3,7 @@
 
 #include <QDialog>
 
+
 namespace Ui {
 class ModeSelectialog;
 }
@@ -16,14 +17,20 @@ public:
     ~ModeSelectialog();
 
 signals:
-    void signalStartOperation(const int);
+    void signalOperation(const uint);
+    void signalEnterNum();
 
 private slots:
-    void on_pushButton_clicked();
+
+
     void on_pushButton_OK_clicked();
+
+    void on_pushButton_Cancel_clicked();
 
 private:
     Ui::ModeSelectialog *ui;
+
+
 };
 
 #endif // MODESELECTIALOG_H

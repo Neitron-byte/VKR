@@ -1,24 +1,35 @@
 #include "modeselectialog.h"
 #include "ui_modeselectialog.h"
+#include <QDebug>
 
 ModeSelectialog::ModeSelectialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ModeSelectialog)
+
 {
     ui->setupUi(this);
-    ui->comboBoxAction->addItem(QStringLiteral("inaccuracy DC -> AC, 1 kHz"),1);
-    ui->comboBoxAction->addItem(QStringLiteral("frequency verification"),2);
+    //id - 301 - "inaccuracy DC -> AC, 1 kHz"
+    // id - 302 - "frequency verification"
+    ui->comboBoxAction->addItem(QStringLiteral("inaccuracy DC -> AC, 1 kHz"),QVariant(301));
+    ui->comboBoxAction->addItem(QStringLiteral("frequency verification"),QVariant(302));
 
 }
 
 ModeSelectialog::~ModeSelectialog()
 {
-    delete ui;
-}
 
+}
 
 
 void ModeSelectialog::on_pushButton_OK_clicked()
 {
-    emit signalStartOperation(ui->comboBoxAction->currentIndex());
+    qDebug()<<ui->comboBoxAction->currentData().toInt();
+    emit signalOperation(ui->comboBoxAction->currentData().toUInt());
+    emit signalEnterNum();
+    this->hide();
+}
+
+void ModeSelectialog::on_pushButton_Cancel_clicked()
+{
+    this->close();
 }

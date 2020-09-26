@@ -1,13 +1,6 @@
 #include "devicedialog.h"
 #include "ui_devicedialog.h"
 
-void DeviceDialog::CheckApply()
-{
-    if(m_ApplyCol && m_ApplyVol){
-        emit signalUnLock();
-        this->hide();
-    }
-}
 
 DeviceDialog::DeviceDialog(QWidget *parent) :
     QDialog(parent),
@@ -20,9 +13,9 @@ DeviceDialog::DeviceDialog(QWidget *parent) :
     AddModelCal();
     AddModelVol();
 
-    m_ApplyCol = false;
-    m_ApplyVol = false;
- }
+    ui->pushButton_Con_Cal->setEnabled(false);
+    ui->pushButton_Con_Vol->setEnabled(false);
+}
 
 DeviceDialog::~DeviceDialog()
 {
@@ -32,12 +25,13 @@ DeviceDialog::~DeviceDialog()
 
 void DeviceDialog::AddModelCal()
 {
-    ui->comboBox_Device_Cal->addItem("H4-7");
+
+    ui->comboBox_Device_Cal->addItem("H4-7", QVariant(100));
 }
 
 void DeviceDialog::AddModelVol()
 {
-    ui->comboBox_Device_Vol->addItem("Agilent 34420A");
+    ui->comboBox_Device_Vol->addItem("Agilent 34420A", QVariant(200));
 }
 
 
@@ -73,39 +67,87 @@ void DeviceDialog::SetNameComPort(QString ComCal, QString ComVal)
 
 void DeviceDialog::on_pushButton_Apply_Cal_clicked()
 {
+    if(ui->pushButton_Apply_Cal->text() == "Apply" ){
     m_ModelCal = ui->comboBox_Device_Cal->currentText();
-    emit signalCreatCalibrator(m_ModelCal,m_NamePortCal);
+    emit signalSaveNameCal(m_ModelCal);
+
+    qDebug()<<ui->comboBox_Device_Cal->currentData().toInt();
+    emit signalCreatDevice(ui->comboBox_Device_Cal->currentData().toInt());
+
     ui->comboBox_Com_Cal->setEnabled(false);
     ui->comboBox_Device_Cal->setEnabled(false);
-    m_ApplyCol = true;
-    emit signalConnectWriteLog(m_ModelCal + " is connected");
-    CheckApply();
+
+    emit signalConnectWriteLog(m_ModelCal + " is creat");
+
+    ui->pushButton_Apply_Cal->setText("Edit");
+    ui->pushButton_Con_Cal->setEnabled(true);
+    }
+    else{
+        ui->comboBox_Com_Cal->setEnabled(true);
+        ui->comboBox_Device_Cal->setEnabled(true);
+        ui->pushButton_Apply_Cal->setText("Apply");
+        ui->pushButton_Con_Cal->setEnabled(false);
+
+    }
 }
 
 void DeviceDialog::on_pushButton_Apply_Vol_clicked()
 {
-    emit SignalOpenVol();
-    m_ModelVol = ui->comboBox_Device_Vol->currentText();
-    ui->comboBox_Com_Vol->setEnabled(false);
-    ui->comboBox_Device_Vol->setEnabled(false);
-    m_ApplyVol = true;
-    emit signalConnectWriteLog(m_ModelVol + " is connected");
-    CheckApply();
+    if(ui->pushButton_Apply_Vol->text() == "Apply" ){
+        m_ModelVol = ui->comboBox_Device_Vol->currentText();
+        emit signalSaveNameVol(m_ModelVol);
+        qDebug()<<ui->comboBox_Device_Vol->currentData().toInt();
+        emit signalCreatDevice(ui->comboBox_Device_Vol->currentData().toInt());
+        ui->comboBox_Com_Vol->setEnabled(false);
+        ui->comboBox_Device_Vol->setEnabled(false);
+
+        emit signalConnectWriteLog(m_ModelVol + " is creat");
+         ui->pushButton_Apply_Vol->setText("Edit");
+          ui->pushButton_Con_Vol->setEnabled(true);
+    } else{
+        ui->comboBox_Com_Vol->setEnabled(true);
+        ui->comboBox_Device_Vol->setEnabled(true);
+        ui->pushButton_Apply_Vol->setText("Apply");
+        ui->pushButton_Con_Vol->setEnabled(false);
+    }
+
 
 }
 
-void DeviceDialog::on_pushButton_Discon_Cal_clicked()
+void DeviceDialog::on_pushButton_Con_Vol_clicked()
 {
-    ui->comboBox_Com_Cal->setEnabled(true);
-    ui->comboBox_Device_Cal->setEnabled(true);
-    this->SignalCloseCal();
-    m_ApplyCol = false;
+    if(ui->pushButton_Con_Vol->text() == "Connect"){
+        emit signalOpenVol();
+        isOpenComVol = true;
+        ui->pushButton_Con_Vol->setText("Disconnect");
+    } else {
+        emit signalCloseComVol();
+        isOpenComVol = false;
+        ui->pushButton_Con_Vol->setText("Connect");
+    }
+
 }
 
-void DeviceDialog::on_pushButton_Discon_Vol_clicked()
+void DeviceDialog::on_pushButton_Con_Cal_clicked()
 {
-    ui->comboBox_Com_Vol->setEnabled(true);
-    ui->comboBox_Device_Vol->setEnabled(true);
-    this->SignalCloseVol();
-    m_ApplyVol = false;
+    if(ui->pushButton_Con_Cal->text() == "Connect"){
+        emit signalOpenCal();
+        isOpenComCal = true;
+        ui->pushButton_Con_Cal->setText("Disconnect");
+    } else {
+        emit signalCloseComCal();
+        isOpenComCal = false;
+        ui->pushButton_Con_Cal->setText("Connect");
+    }
+
+}
+
+void DeviceDialog::on_pushButton_clicked()
+{
+    if(isOpenComCal && isOpenComVol){
+        emit signalUnLock();
+        emit CreatAlgorithm();
+    }
+
+    this->hide();
 }

@@ -11,21 +11,33 @@
 
 class CalibratorCom : public DeviceCom
 {
-
+Q_OBJECT
 public:
-    CalibratorCom(QString name = "", quint32 bR = 0, quint32 dB = 0, quint32 par = 0, quint32 stB = 0, quint32 fC = 0)
-        : DeviceCom(name,bR,dB,par,stB,fC)
+     explicit CalibratorCom(QString name = "", quint32 bR = 0, quint32 dB = 0, quint32 par = 0, quint32 stB = 0, quint32 fC = 0,QObject *parent = nullptr)
+        : DeviceCom(name,bR,dB,par,stB,fC,parent)
     {
-        qDebug()<<"Volt Const";
+        qDebug()<<"Cal Const";
         m_serial = new QSerialPort();
+        connect(m_serial, &QSerialPort::errorOccurred, this, &CalibratorCom::handleError);
+
     }
     ~CalibratorCom(){
         delete m_serial;
     }
 
-    virtual void OpenSerial() override;
-    virtual void CloseSerial() override;
+    virtual bool OpenSerial() override;
+    virtual bool CloseSerial() override;
     virtual void CreatSerial() override;
+
+    bool SendSerial(float);
+    bool SendFreqSerial(float,uint);
+
+public    slots:
+    void handleError(QSerialPort::SerialPortError error);
+
+
+signals:
+    void Error_(const QString&);
 
 
 private:

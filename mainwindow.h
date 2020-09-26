@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include "settingcomdialog.h"
 #include "devicedialog.h"
-#include "presentdate.h"
 #include "modeselectialog.h"
 #include <QToolBar>
 #include <QThread>
@@ -12,8 +11,9 @@
 #include <QTime>
 #include <QTimer>
 #include "COM/presenterdevice.h"
-
-
+#include "Data.h"
+#include "algoritm.h"
+#include "dialognumcycles.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,6 +24,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     void SetLenght(int);
+    void AddItem();
+    bool CheckInputData();
+    void connects();
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -36,17 +39,42 @@ private slots:
     void on_action_Devices_triggered();
     void slot_set_Time(const QString);
     void slot_set_Date(const QString);
-    void slotSetData(bool);
-    void on_pushButton_2_clicked();
     void slotViewModeDialog();
 
     void on_doubleSpinBox_temp_valueChanged(double arg1);
 
+
+
+
+    void on_pushButton_save_clicked();
+
+    void on_pushButton_start_clicked();
+
 signals:
 
     void CheckCom();
-    void signalSendData(double,QString,QString,QString,bool,bool,double);//сигнал сохранения введенных данных
 
+    //cигнал на сохранение данных
+    void signalSaveData(const float, const QString , const QString ,const QString );
+    //cигнал на сохранение данных в алгоритм
+    void signalSaveDataDevice(bool,bool,const float);
+
+
+
+
+
+
+public slots:
+    //в статусы
+    void StatusMessage1(const QString &);
+    void StatusMessage2(const QString &);
+    //в поле
+    void slotWriteLog(const QString&);
+
+    void slotLockStart();
+    void slotUnLockStart();
+    void EnterNumberCycles();
+    // QObject interface
 
 private:
     Ui::MainWindow *ui;
@@ -54,10 +82,10 @@ private:
     SettingComDialog* m_SettingsCom = nullptr;//Окно настроек Com портов
     DeviceDialog* m_DeviceDialog = nullptr;//Окно подключения к приборам
     ModeSelectialog* m_ModeSelectDialog = nullptr;//окно выбора операции поверки
+    DialogNumCycles* m_DialogNumCycles = nullptr;//окно задания количества циклов измерений
 
-
-    QThread* m_ThreadCal= nullptr;//Поток для калибратора
-    QThread* m_ThreadVol= nullptr;//Поток для вольтметра
+    //отдельный поток для взаимодействия с приборами
+    QThread* m_Thread = nullptr;
 
     QLabel *m_status1 = nullptr;//статус подключения QSatusBar
     QLabel *m_status2 = nullptr;//статус подключения QSatusBar
@@ -68,20 +96,18 @@ private:
     QTime time;
     QDate date;
 
-    //данные
-    PresentDate* m_data = nullptr;
+   //презентер для работы с оборудованием
 
-    //презентер для работы с оборудованием
     PresenterDevice* m_PresenterDevice = nullptr;
 
-public slots:
-    void StatusMessage1(const QString &message);
-    void StatusMessage2(const QString &message);
-    void slotWriteLog(const QString);
-    void slotLockStart();
-    void slotUnLockStart();
+    //данные
+    Data * m_data = nullptr;
 
-    // QObject interface
+    //алгоритм поверки
+    algoritm* m_algoritm = nullptr;
+
+
+
 protected:
     virtual void timerEvent(QTimerEvent *event);
 };

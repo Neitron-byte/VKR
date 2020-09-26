@@ -1,30 +1,134 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QIntValidator>
+#include <QStringList>
 
 void MainWindow::SetLenght(int Num)
 {
-    ui->doubleSpinBox_temp->setMinimum(-10);
+    ui->doubleSpinBox_temp->setMinimum(0);
     ui->doubleSpinBox_temp->setMaximum(40);
     ui->doubleSpinBox_temp->setSingleStep(0.1);
 
     ui->doubleSpinBox_Volt->setMinimum(0);
     ui->doubleSpinBox_Volt->setMaximum(100);
-    ui->doubleSpinBox_temp->setSingleStep(0.1);
+    ui->doubleSpinBox_Volt->setSingleStep(0.1);
 
     ui->lineEdit_fullname->setMaxLength(Num);
     ui->lineEdit_Num->setMaxLength(Num);
     ui->lineEdit_ver_dev->setMaxLength(Num);
 }
 
+void MainWindow::AddItem()
+{
+    //данные о поверяемом устр-ве
+    ui->comboBox_typeverdev->addItem(QStringLiteral("With squa func"),QVariant("squa"));
+    ui->comboBox_typeverdev->addItem(QStringLiteral("With line func"),QVariant("line"));
+
+    ui->comboBox_typerefdev->addItem(QStringLiteral("With squa func"),QVariant("squa"));
+    ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"),QVariant("line"));
+
+
+}
+
+bool MainWindow::CheckInputData()
+{
+    if(ui->doubleSpinBox_temp->value() <= 0){
+        QMessageBox::information(this, tr("Info"),"Please input correct temp");
+        return false;
+    }
+
+    if(ui->lineEdit_fullname->text() == ""){
+        QMessageBox::information(this, tr("Info"),"Please input fullname");
+        return false;
+    }
+
+    if(ui->lineEdit_ver_dev->text() == ""){
+        QMessageBox::information(this, tr("Info"),"Please input model");
+        return false;
+    }
+
+    if(ui->lineEdit_Num->text() == ""){
+        QMessageBox::information(this, tr("Info"),"Please input serial number");
+        return false;
+    }
+
+    if(ui->doubleSpinBox_Volt->value() <= 0){
+        QMessageBox::information(this, tr("Info"),"Please input correct Volt");
+        return false;
+    }
+    return true;
+
+}
+
+void MainWindow::connects()
+{
+    //передача доступных портов из PresentDevice в Settings Dialog
+    connect(m_PresenterDevice,SIGNAL(signaListCom(const QList<QString>&)),m_SettingsCom,SLOT(InitialComPorts(const QList<QString>&)));
+    connect(this,SIGNAL(CheckCom()),m_PresenterDevice,SLOT(SearchComPorts()),Qt::DirectConnection);
+
+
+    //сохранение настроек СOM портов из SettingsDialog в PresenterDevice
+    connect(m_SettingsCom,SIGNAL(SignalSetSettingsCal(QString,uint,uint,uint,uint,uint)),
+            m_PresenterDevice,SLOT(slotSettingsSaveCal(QString,uint,uint,uint,uint,uint)));
+    connect(m_SettingsCom,SIGNAL(SignalSetSettingsVol(QString,uint,uint,uint,uint,uint)),
+            m_PresenterDevice,SLOT(slotSettingsSaveVol(QString,uint,uint,uint,uint,uint)));
+
+    //передача Com портов из Setting в DialogDevice
+    connect(m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
+
+    //сохранение название приборов
+    connect(m_DeviceDialog,SIGNAL(signalSaveNameCal(QString)),m_PresenterDevice,SLOT(slotSaveNameCal(QString)));
+    connect(m_DeviceDialog,SIGNAL(signalSaveNameVol(QString)),m_PresenterDevice,SLOT(slotSaveNameVol(QString)));
+
+    //создание объектов
+    connect(m_DeviceDialog,SIGNAL(signalCreatDevice(int)),m_PresenterDevice,SLOT(slotCreatDevice(int)));
+    connect(m_PresenterDevice,SIGNAL(SetPointDevice(const DeviceCom*,const DeviceCom*)),m_algoritm,SLOT(setPoint(const DeviceCom*,const DeviceCom*)));
+
+    //for open Coms
+    connect(m_DeviceDialog,SIGNAL(signalOpenCal()),m_PresenterDevice,SLOT(slotOpenComCal()));
+    connect(m_DeviceDialog,SIGNAL(signalOpenVol()),m_PresenterDevice,SLOT(slotOpenComVol()));
+
+    //for close Coms
+    connect(m_DeviceDialog,SIGNAL(signalCloseComCal()),m_PresenterDevice,SLOT(slotCloseComCal()));
+    connect(m_DeviceDialog,SIGNAL(signalCloseComVol()),m_PresenterDevice,SLOT(slotCloseComVol()));
+
+
+    //передача сообщений в строку состояния
+    connect(m_PresenterDevice,SIGNAL(signalWriteStatusCal(QString)),this,SLOT(StatusMessage1(QString)));
+    connect(m_PresenterDevice,SIGNAL(signalWriteStatusVol(QString)),this,SLOT(StatusMessage2(QString)));
+
+    //передача сообщений в RealLog
+    connect(m_SettingsCom,SIGNAL(signalCOMWriteLog(QString)),this,SLOT(slotWriteLog(QString)));
+    connect(m_algoritm,SIGNAL(error_(QString)),this, SLOT(slotWriteLog(QString)));
+
+    //запуск алгоритма
+    connect(m_DeviceDialog,SIGNAL(CreatAlgorithm()),m_PresenterDevice,SLOT(slotCreatAlgoritm()));
+
+    //сохранение данных из gui
+    connect(this,SIGNAL(signalSaveData(float,QString,QString,QString)),m_data,SLOT(SetData(float,QString,QString,QString)));
+    connect(this,SIGNAL(signalSaveDataDevice(bool,bool,float)),m_algoritm,SLOT(slotSaveDataDevice(bool,bool,float)));
+
+    //выбор процедуры поверки
+    connect(m_ModeSelectDialog,SIGNAL(signalOperation(uint)),m_algoritm,SLOT(setOperatioNumber(uint)));
+
+    //задание количество циклов поверки
+    connect(m_ModeSelectDialog,SIGNAL(signalEnterNum()),this,SLOT(EnterNumberCycles()));
+    connect(m_DialogNumCycles,SIGNAL(signalSetNum(uint)),m_algoritm,SLOT(setNumberCycles(uint)));
+
+    //сигнал запуска поверки
+    connect(m_DialogNumCycles,SIGNAL(signalStartWork()),m_algoritm,SLOT(StartWork()));
+
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow),
-      m_data(new PresentDate),
       m_SettingsCom (new SettingComDialog),
       m_DeviceDialog (new DeviceDialog),
       m_ModeSelectDialog(new ModeSelectialog),
-      m_PresenterDevice(new PresenterDevice)
+      m_data(new Data),
+      m_algoritm(new algoritm),
+      m_DialogNumCycles (new DialogNumCycles)
 
 
 {
@@ -36,41 +140,17 @@ MainWindow::MainWindow(QWidget *parent)
     m_status2 = new QLabel;
     ui->statusbar->addWidget(m_status2);
 
-    //передача доступных портов из PresentDevice в Settings Dialog
-    connect(this,SIGNAL(CheckCom()),m_PresenterDevice,SLOT(SearchComPorts()));
-    connect(m_PresenterDevice,SIGNAL(signaListCom(const QList<QString>&)),m_SettingsCom,SLOT(InitialComPorts(const QList<QString>&)));
+    //отдельный поток для взаимодействия с приборами
+    m_Thread = new QThread;
+    m_PresenterDevice = new PresenterDevice(m_data,m_algoritm);
+    m_PresenterDevice->moveToThread(m_Thread);
+    m_algoritm->moveToThread(m_Thread);
+    connect(m_Thread, SIGNAL(finished()), m_PresenterDevice, SLOT(deleteLater()));
+    m_Thread->start();
+    qDebug()<<m_PresenterDevice->thread();
 
-    //сохранение настроек СOM портов из SettingsDialog в PresenterDevice
-    connect(m_SettingsCom,SIGNAL(SignalSetSettingsCal(QString,qint32,qint32,qint32,qint32,qint32)),
-            m_PresenterDevice,SLOT(slotSettingsSaveCal(QString,quint32,quint32,quint32,quint32,quint32)));
-    connect(m_SettingsCom,SIGNAL(SignalSetSettingsVol(QString,qint32,qint32,qint32,qint32,qint32)),
-            m_PresenterDevice,SLOT(slotSettingsSaveVol(QString,quint32,quint32,quint32,quint32,quint32)));
+    this->connects();
 
-    //передача Com портов из Setting в Dialog
-    connect(m_SettingsCom,SIGNAL(TransmitNameCom(QString,QString)),m_DeviceDialog,SLOT(SetNameComPort(QString,QString)));
-
-    //создание объектов устройств
-
-
-
-
-
-    //поток для калибратора
-//    m_ThreadCal = new QThread;
-//    m_ComPortCal = new ComPort;
-//    m_ComPortCal->moveToThread(m_ThreadCal);
-//    connect(m_ThreadCal,SIGNAL(started()),m_ComPortCal,SLOT(CreateCom()));
-//    connect(m_ThreadCal, SIGNAL(finished()), m_ComPortCal, SLOT(deleteLater()));
-//    m_ThreadCal->start();
-
-
-    //поток для вольтметра
-//    m_ThreadVol = new QThread;
-//    m_ComPortVol = new ComPort;
-//    m_ComPortVol->moveToThread(m_ThreadVol);
-//    connect(m_ThreadVol,SIGNAL(started()),m_ComPortVol,SLOT(CreateCom()));
-//    connect(m_ThreadVol, SIGNAL(finished()),m_ComPortVol,SLOT(deleteLater()));
-//    m_ThreadVol->start();
 
     //TimeDate
     m_timerinterval = 1000;
@@ -80,28 +160,26 @@ MainWindow::MainWindow(QWidget *parent)
     slot_set_Time(time.toString(Qt::SystemLocaleLongDate));
     slot_set_Date(date.toString(Qt::SystemLocaleLongDate));
 
-    //данные о поверяемом устр-ве
-    ui->comboBox_typeverdev->addItem(QStringLiteral("With squa func"));
-    ui->comboBox_typeverdev->addItem(QStringLiteral("With line func"));
-
-    ui->comboBox_typerefdev->addItem(QStringLiteral("With squa func"));
-    ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"));
 
     //данные
     this->slotLockStart();
-    ui->pushButton_2->setEnabled(false);
-    connect(ui->pushButton_start,SIGNAL(clicked(bool)),this,SLOT(slotSetData(bool)));// сохранение данных в модели
-    connect(this, SIGNAL(signalSendData(double,QString,QString,QString,bool,bool,double)),m_data,SLOT(setDate(double,QString,QString,QString,bool,bool,double)));
-    connect(m_data,SIGNAL(signalInLog(QString)),this,SLOT(slotWriteLog(QString)));//запись в лог
-    connect(m_data,SIGNAL(signalsLockStart()),this,SLOT(slotLockStart()));//блок виджетов
+    //блокируем кнопку старт
+    ui->pushButton_start->setEnabled(false);
+
+
+
     //сигнал на появление диалогового окна выбора операции поверки
-    connect(m_data,SIGNAL(signalNextAction()),this,SLOT(slotViewModeDialog()));
+    //connect(m_data,SIGNAL(signalNextAction()),this,SLOT(slotViewModeDialog()));
 
     //разблокировка главного виджета после подключения
     connect(m_DeviceDialog,SIGNAL(signalUnLock()),this,SLOT(slotUnLockStart()));
 
     //ограничение на количество cимволов в lineEdit
     this->SetLenght(5);
+    //добавление данных в комбобоксы
+    this->AddItem();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -112,11 +190,9 @@ MainWindow::~MainWindow()
     delete m_ModeSelectDialog;
     delete m_PresenterDevice;
 
-    m_ThreadCal->quit();
-    m_ThreadCal->wait();
+    m_Thread->quit();
+    m_Thread->wait();
 
-    m_ThreadVol->quit();
-    m_ThreadVol->wait();
     delete ui;
 }
 
@@ -161,29 +237,6 @@ void MainWindow::slot_set_Date(const QString str)
     ui->label_Date->setText(str);
 }
 
-void MainWindow::slotSetData(bool)
-{
-    qDebug()<<"SlotSendData";
-    double Temp = ui->doubleSpinBox_temp->value();
-    QString Name = ui->lineEdit_fullname->text();
-    QString Model = ui->lineEdit_ver_dev->text();
-    QString Num = ui->lineEdit_Num->text();
-    bool TypeDev, TypeRefDev;
-    if(ui->comboBox_typeverdev->currentText() == "With squa func"){
-        TypeDev = true;
-    } else{
-        TypeDev = false;
-    }
-    if(ui->comboBox_typerefdev->currentText() == "With squa func"){
-        TypeRefDev = true;
-    } else{
-        TypeRefDev = false;
-    }
-    double Volt = ui->doubleSpinBox_Volt->value();
-    qDebug()<<"SlotSendData2";
-    emit signalSendData(Temp,Name,Model,Num,TypeDev,TypeRefDev,Volt);
-
-}
 
 void MainWindow::StatusMessage1(const QString &message)
 {
@@ -195,7 +248,7 @@ void MainWindow::StatusMessage2(const QString &message)
     m_status2->setText(m_DeviceDialog->getNameVol()+" : "+message);
 }
 
-void MainWindow::slotWriteLog(const QString msg)
+void MainWindow::slotWriteLog(const QString& msg)
 {
      qDebug()<< "slot Write";
     ui->textEditLog->append(ui->label_Time->text() + " : " + msg);
@@ -210,7 +263,7 @@ void MainWindow::slotLockStart()
     ui->doubleSpinBox_Volt->setEnabled(false);
     ui->comboBox_typerefdev->setEnabled(false);
     ui->comboBox_typeverdev->setEnabled(false);
-    ui->pushButton_start->setEnabled(false);
+    ui->pushButton_save->setEnabled(false);
 }
 
 void MainWindow::slotUnLockStart()
@@ -222,8 +275,13 @@ void MainWindow::slotUnLockStart()
     ui->doubleSpinBox_Volt->setEnabled(true);
     ui->comboBox_typerefdev->setEnabled(true);
     ui->comboBox_typeverdev->setEnabled(true);
-    ui->pushButton_start->setEnabled(true);
-    ui->pushButton_2->setEnabled(true);
+    //ui->pushButton_start->setEnabled(true);
+    ui->pushButton_save->setEnabled(true);
+}
+
+void MainWindow::EnterNumberCycles()
+{
+    m_DialogNumCycles->show();
 }
 
 
@@ -237,13 +295,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
 }
 
-void MainWindow::on_pushButton_2_clicked()
-{
 
-    this->slotUnLockStart();
-
-
-}
 
 void MainWindow::slotViewModeDialog()
 {
@@ -251,7 +303,65 @@ void MainWindow::slotViewModeDialog()
 
 }
 
+
 void MainWindow::on_doubleSpinBox_temp_valueChanged(double arg1)
 {
+
+}
+
+
+void MainWindow::on_pushButton_save_clicked()
+{
+    if(this->CheckInputData()){
+
+        float Temp = ui->doubleSpinBox_temp->value();
+        QString Name = ui->lineEdit_fullname->text();
+        QString Model = ui->lineEdit_ver_dev->text();
+        QString Num = ui->lineEdit_Num->text();
+        bool TypeDev, TypeRefDev;
+        qDebug()<< ui->comboBox_typeverdev->currentData();
+        qDebug()<< ui->comboBox_typerefdev->currentData();
+        if(ui->comboBox_typeverdev->currentData().toString() == "squa"){
+            TypeDev = true;
+        } else{
+            TypeDev = false;
+        }
+        if(ui->comboBox_typerefdev->currentData().toString() == "squa"){
+            TypeRefDev = true;
+        } else{
+            TypeRefDev = false;
+        }
+        float Volt = ui->doubleSpinBox_Volt->value();
+        qDebug()<<"SlotSendData";
+        qDebug()<<Temp;
+        qDebug()<<Name;
+        qDebug()<<Model;
+        qDebug()<< Num;
+        qDebug()<<TypeDev;
+        qDebug()<<TypeRefDev;
+        qDebug()<<Volt;
+        emit signalSaveData(Temp,Name,Model,Num);
+        emit signalSaveDataDevice(TypeDev,TypeRefDev,Volt);
+        this->slotWriteLog("Data is successfully stored");
+
+        if (ui->pushButton_save->text() == "SAVE")
+        {
+            this->slotLockStart();
+            ui->pushButton_start->setEnabled(true);
+            ui->pushButton_save->setEnabled(true);
+            ui->pushButton_save->setText("EDIT");
+        } else{
+            this->slotUnLockStart();
+            ui->pushButton_save->setText("SAVE");
+            ui->pushButton_start->setEnabled(false);
+        }
+
+
+    }
+}
+
+void MainWindow::on_pushButton_start_clicked()
+{
+    m_ModeSelectDialog->show();
 
 }

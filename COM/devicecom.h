@@ -4,18 +4,30 @@
 #include <QString>
 #include <QList>
 #include <QDebug>
+#include <QSerialPort>
 
-class DeviceCom // абстрактный класс
+class DeviceCom: public QObject
 {
+    Q_OBJECT
+
 public:
-    DeviceCom(QString name = "", quint32 bR = 0, quint32 dB = 0, quint32 par = 0, quint32 stop = 0, quint32 fC = 0)
+
+
+    explicit DeviceCom(QString name = "", uint bR = 0, uint dB = 0, uint par = 0, uint stop = 0, uint fC = 0,QObject *parent = nullptr)
+        : QObject(parent)
     {
         m_SettingsCom.m_name = name;
-        m_SettingsCom.m_baudRate = bR,
-        m_SettingsCom.m_dataBits = dB;
-        m_SettingsCom.m_parity = par;
-        m_SettingsCom.m_stopBits = stop;
-        m_SettingsCom.m_flowControl = fC;
+        qDebug() << m_SettingsCom.m_name;
+        m_SettingsCom.m_baudRate = static_cast<QSerialPort::BaudRate>(bR),
+        qDebug() << m_SettingsCom.m_baudRate;
+        m_SettingsCom.m_dataBits = static_cast<QSerialPort::DataBits>(dB);
+        qDebug() << m_SettingsCom.m_dataBits;
+        m_SettingsCom.m_parity = static_cast<QSerialPort::Parity>(par);
+        qDebug() << m_SettingsCom.m_parity;
+        m_SettingsCom.m_stopBits = static_cast<QSerialPort::StopBits>(stop);
+        qDebug() << m_SettingsCom.m_stopBits;
+        m_SettingsCom.m_flowControl = static_cast<QSerialPort::FlowControl>(fC);
+        qDebug() << m_SettingsCom.m_flowControl;
 
     }
     virtual ~DeviceCom() = 0;
@@ -26,38 +38,42 @@ public:
     //метод для установки параметров COM
     void SetParamCom(QString name,quint32 bR,quint32 dB, quint32 par, quint32 stop, quint32 Control)
     {
-        m_SettingsCom.m_name = name;
+        m_SettingsCom.m_name;
         qDebug() << m_SettingsCom.m_name;
-        m_SettingsCom.m_baudRate = bR,
+        m_SettingsCom.m_baudRate = static_cast<QSerialPort::BaudRate>(bR),
         qDebug() << m_SettingsCom.m_baudRate;
-        m_SettingsCom.m_dataBits = dB;
+        m_SettingsCom.m_dataBits = static_cast<QSerialPort::DataBits>(dB);
         qDebug() << m_SettingsCom.m_dataBits;
-        m_SettingsCom.m_parity = par;
+        m_SettingsCom.m_parity = static_cast<QSerialPort::Parity>(par);
         qDebug() << m_SettingsCom.m_parity;
-        m_SettingsCom.m_stopBits = stop;
+        m_SettingsCom.m_stopBits = static_cast<QSerialPort::StopBits>(stop);
         qDebug() << m_SettingsCom.m_stopBits;
-        m_SettingsCom.m_flowControl = Control;
+        m_SettingsCom.m_flowControl = static_cast<QSerialPort::FlowControl>(Control);
         qDebug() << m_SettingsCom.m_flowControl;
 
     }
 
-    virtual void OpenSerial() = 0;
-    virtual void CloseSerial() = 0;
+    virtual bool OpenSerial() = 0;
+    virtual bool CloseSerial() = 0;
     virtual void CreatSerial() = 0;
-    //
+
 
 protected:
     //настройки COM
     struct SettingsComPort {
         QString m_name;
-        quint32 m_baudRate;
-        quint32 m_dataBits;
-        quint32 m_parity;
-        quint32 m_stopBits;
-        quint32 m_flowControl;
+        uint m_baudRate;
+        QSerialPort::DataBits m_dataBits;
+        QSerialPort::Parity m_parity;
+        QSerialPort::StopBits m_stopBits;
+        QSerialPort::FlowControl m_flowControl;
     };
     //текущие настройки порта
     SettingsComPort m_SettingsCom;
+
+    //Номинальное напряжение, на которое рассчитан преобразователь
+    float m_Voltage;
+
 
 
 };

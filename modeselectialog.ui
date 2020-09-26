@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>9</x>
@@ -64,14 +64,14 @@
       <item>
        <widget class="QPushButton" name="pushButton_OK">
         <property name="text">
-         <string>OK</string>
+         <string>Next</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_Cancel">
         <property name="text">
-         <string>Отмена</string>
+         <string>Close</string>
         </property>
        </widget>
       </item>

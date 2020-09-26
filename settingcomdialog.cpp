@@ -38,6 +38,7 @@ SettingComDialog::~SettingComDialog()
 void SettingComDialog::InitialComPorts(const QList<QString>& List)
 {
         m_List = List;
+        qDebug()<<"m_Settings";
         for (const QString& com : m_List) {
             qDebug() << com;
         }
@@ -163,12 +164,19 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
 {
     if (!m_List.isEmpty()){
 
+//    qDebug()<<ui->SetComBox_Cal->currentText();
+//            qDebug()<<ui->BoudrateBox_Cal->itemData(ui->BoudrateBox_Cal->currentIndex()).toUInt();
+//            qDebug()<<ui->DataBitsBox_Cal->currentData().toUInt();
+//            qDebug()<<ui->ParityBox_Cal->currentText();
+//            qDebug()<<ui->StopBitsBox_Cal->currentData().toUInt();
+//            qDebug()<<ui->FlowControlBox_Cal->currentText();
+
     SignalSetSettingsCal(ui->SetComBox_Cal->currentText(),
-                            ui->BoudrateBox_Cal->currentText().toInt(),
-                            ui->DataBitsBox_Cal->currentText().toInt(),
-                            ui->ParityBox_Cal->itemData(ui->ParityBox_Cal->currentIndex()).toInt(),
-                            ui->StopBitsBox_Cal->currentText().toInt(),
-                            ui->FlowControlBox_Cal->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
+                            ui->BoudrateBox_Cal->itemData(ui->BoudrateBox_Cal->currentIndex()).toUInt(),
+                            ui->DataBitsBox_Cal->itemData(ui->DataBitsBox_Cal->currentIndex()).toUInt(),
+                            ui->ParityBox_Cal->itemData(ui->ParityBox_Cal->currentIndex()).toUInt(),
+                            ui->StopBitsBox_Cal->itemData(ui->StopBitsBox_Cal->currentIndex()).toUInt(),
+                            ui->FlowControlBox_Cal->itemData(ui->FlowControlBox_Cal->currentIndex()).toUInt());
 
     SetEnabledCal(false);
     emit signalCOMWriteLog(ui->SetComBox_Cal->currentText() + " settings saved successfully");
@@ -188,11 +196,11 @@ void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
 {
     if (!m_List.isEmpty()){
     SignalSetSettingsVol (ui->SetComBox_Volt->currentText(),
-                            ui->BoudrateBox_Volt->currentText().toInt(),
-                            ui->DataBitsBox_Volt->currentText().toInt(),
-                            ui->ParityBox_Volt->itemData(ui->ParityBox_Cal->currentIndex()).toInt(),
-                            ui->StopBitsBox_Volt->currentText().toInt(),
-                            ui->FlowControlBox_Volt->itemData(ui->FlowControlBox_Cal->currentIndex()).toInt());
+                          ui->BoudrateBox_Volt->itemData(ui->BoudrateBox_Volt->currentIndex()).toUInt(),
+                          ui->DataBitsBox_Volt->itemData(ui->DataBitsBox_Volt->currentIndex()).toUInt(),
+                          ui->ParityBox_Volt->itemData(ui->ParityBox_Volt->currentIndex()).toUInt(),
+                          ui->StopBitsBox_Volt->itemData(ui->StopBitsBox_Volt->currentIndex()).toUInt(),
+                          ui->FlowControlBox_Volt->itemData(ui->FlowControlBox_Volt->currentIndex()).toUInt());
 
     SetEnabledVolt(false);
     m_ApplyVol = true;

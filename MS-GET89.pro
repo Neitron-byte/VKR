@@ -21,12 +21,13 @@ SOURCES += \
     COM/devicecom.cpp \
     COM/presenterdevice.cpp \
     COM/voltmetercom.cpp \
+    algoritm.cpp \
+    data.cpp \
     devicedialog.cpp \
+    dialognumcycles.cpp \
     main.cpp \
     mainwindow.cpp \
-    modeldate.cpp \
     modeselectialog.cpp \
-    presentdate.cpp \
     settingcomdialog.cpp
 
 HEADERS += \
@@ -34,15 +35,18 @@ HEADERS += \
     COM/devicecom.h \
     COM/presenterdevice.h \
     COM/voltmetercom.h \
+    algoritm.h \
+    data.h \
     devicedialog.h \
+    dialognumcycles.h \
     mainwindow.h \
-    modeldate.h \
     modeselectialog.h \
     presentdate.h \
     settingcomdialog.h
 
 FORMS += \
     devicedialog.ui \
+    dialognumcycles.ui \
     mainwindow.ui \
     modeselectialog.ui \
     settingcomdialog.ui
