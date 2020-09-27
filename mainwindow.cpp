@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QIntValidator>
 #include <QStringList>
+#include <QTextEdit>
 
 void MainWindow::SetLenght(int Num)
 {
@@ -93,6 +94,7 @@ void MainWindow::connects()
     connect(m_DeviceDialog,SIGNAL(signalCloseComVol()),m_PresenterDevice,SLOT(slotCloseComVol()));
 
 
+
     //передача сообщений в строку состояния
     connect(m_PresenterDevice,SIGNAL(signalWriteStatusCal(QString)),this,SLOT(StatusMessage1(QString)));
     connect(m_PresenterDevice,SIGNAL(signalWriteStatusVol(QString)),this,SLOT(StatusMessage2(QString)));
@@ -100,6 +102,7 @@ void MainWindow::connects()
     //передача сообщений в RealLog
     connect(m_SettingsCom,SIGNAL(signalCOMWriteLog(QString)),this,SLOT(slotWriteLog(QString)));
     connect(m_algoritm,SIGNAL(error_(QString)),this, SLOT(slotWriteLog(QString)));
+    connect(m_DeviceDialog,SIGNAL(signalConnectWriteLog(QString)),this,SLOT(slotWriteLog(QString)));
 
     //запуск алгоритма
     connect(m_DeviceDialog,SIGNAL(CreatAlgorithm()),m_PresenterDevice,SLOT(slotCreatAlgoritm()));
@@ -117,6 +120,8 @@ void MainWindow::connects()
 
     //сигнал запуска поверки
     connect(m_DialogNumCycles,SIGNAL(signalStartWork()),m_algoritm,SLOT(StartWork()));
+    //cигнал окончания проверки
+    connect(m_algoritm,SIGNAL(EndProcess()),this,SLOT(slotViewModeDialog()));
 
 }
 
@@ -145,12 +150,15 @@ MainWindow::MainWindow(QWidget *parent)
     m_PresenterDevice = new PresenterDevice(m_data,m_algoritm);
     m_PresenterDevice->moveToThread(m_Thread);
     m_algoritm->moveToThread(m_Thread);
+    connect(m_Thread, SIGNAL(finished()), m_algoritm,SLOT(deleteLater()));
     connect(m_Thread, SIGNAL(finished()), m_PresenterDevice, SLOT(deleteLater()));
+
     m_Thread->start();
     qDebug()<<m_PresenterDevice->thread();
 
     this->connects();
 
+    this->CheckCom();
 
     //TimeDate
     m_timerinterval = 1000;
@@ -166,13 +174,13 @@ MainWindow::MainWindow(QWidget *parent)
     //блокируем кнопку старт
     ui->pushButton_start->setEnabled(false);
 
-
+    ui->textEditLog->setReadOnly(true);
 
     //сигнал на появление диалогового окна выбора операции поверки
     //connect(m_data,SIGNAL(signalNextAction()),this,SLOT(slotViewModeDialog()));
 
     //разблокировка главного виджета после подключения
-    connect(m_DeviceDialog,SIGNAL(signalUnLock()),this,SLOT(slotUnLockStart()));
+    connect(m_PresenterDevice,SIGNAL(signalUnLock()),this,SLOT(slotUnLockStart()));
 
     //ограничение на количество cимволов в lineEdit
     this->SetLenght(5);
@@ -188,7 +196,10 @@ MainWindow::~MainWindow()
     delete m_SettingsCom;
     delete m_DeviceDialog;
     delete m_ModeSelectDialog;
-    delete m_PresenterDevice;
+    //delete m_PresenterDevice;
+    delete m_data;
+    delete m_DialogNumCycles;
+
 
     m_Thread->quit();
     m_Thread->wait();
@@ -207,7 +218,7 @@ void MainWindow::on_action_Exit_triggered()
 
 void MainWindow::on_action_Configure_triggered()
 {
-    this->CheckCom();
+    //this->CheckCom();
     m_SettingsCom->show();
 }
 
@@ -312,52 +323,52 @@ void MainWindow::on_doubleSpinBox_temp_valueChanged(double arg1)
 
 void MainWindow::on_pushButton_save_clicked()
 {
-    if(this->CheckInputData()){
+    if (ui->pushButton_save->text() == "SAVE") {
+         if(this->CheckInputData()){
+             float Temp = ui->doubleSpinBox_temp->value();
+             QString Name = ui->lineEdit_fullname->text();
+             QString Model = ui->lineEdit_ver_dev->text();
+             QString Num = ui->lineEdit_Num->text();
+             bool TypeDev, TypeRefDev;
+             qDebug()<< ui->comboBox_typeverdev->currentData();
+             qDebug()<< ui->comboBox_typerefdev->currentData();
+             if(ui->comboBox_typeverdev->currentData().toString() == "squa"){
+                 TypeDev = true;
+             } else{
+                 TypeDev = false;
+             }
+             if(ui->comboBox_typerefdev->currentData().toString() == "squa"){
+                 TypeRefDev = true;
+             } else{
+                 TypeRefDev = false;
+             }
+             float Volt = ui->doubleSpinBox_Volt->value();
+             qDebug()<<"SlotSendData";
+             qDebug()<<Temp;
+             qDebug()<<Name;
+             qDebug()<<Model;
+             qDebug()<< Num;
+             qDebug()<<TypeDev;
+             qDebug()<<TypeRefDev;
+             qDebug()<<Volt;
+             emit signalSaveData(Temp,Name,Model,Num);
+             emit signalSaveDataDevice(TypeDev,TypeRefDev,Volt);
+             this->slotWriteLog("Data is successfully stored");
 
-        float Temp = ui->doubleSpinBox_temp->value();
-        QString Name = ui->lineEdit_fullname->text();
-        QString Model = ui->lineEdit_ver_dev->text();
-        QString Num = ui->lineEdit_Num->text();
-        bool TypeDev, TypeRefDev;
-        qDebug()<< ui->comboBox_typeverdev->currentData();
-        qDebug()<< ui->comboBox_typerefdev->currentData();
-        if(ui->comboBox_typeverdev->currentData().toString() == "squa"){
-            TypeDev = true;
-        } else{
-            TypeDev = false;
-        }
-        if(ui->comboBox_typerefdev->currentData().toString() == "squa"){
-            TypeRefDev = true;
-        } else{
-            TypeRefDev = false;
-        }
-        float Volt = ui->doubleSpinBox_Volt->value();
-        qDebug()<<"SlotSendData";
-        qDebug()<<Temp;
-        qDebug()<<Name;
-        qDebug()<<Model;
-        qDebug()<< Num;
-        qDebug()<<TypeDev;
-        qDebug()<<TypeRefDev;
-        qDebug()<<Volt;
-        emit signalSaveData(Temp,Name,Model,Num);
-        emit signalSaveDataDevice(TypeDev,TypeRefDev,Volt);
-        this->slotWriteLog("Data is successfully stored");
+             this->slotLockStart();
+             ui->pushButton_start->setEnabled(true);
+             ui->pushButton_save->setEnabled(true);
+             ui->pushButton_save->setText("EDIT");
 
-        if (ui->pushButton_save->text() == "SAVE")
-        {
-            this->slotLockStart();
-            ui->pushButton_start->setEnabled(true);
-            ui->pushButton_save->setEnabled(true);
-            ui->pushButton_save->setText("EDIT");
-        } else{
-            this->slotUnLockStart();
-            ui->pushButton_save->setText("SAVE");
-            ui->pushButton_start->setEnabled(false);
-        }
+         }
 
-
+    } else {
+        this->slotUnLockStart();
+        ui->pushButton_save->setText("SAVE");
+        ui->pushButton_start->setEnabled(false);
     }
+
+
 }
 
 void MainWindow::on_pushButton_start_clicked()

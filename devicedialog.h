@@ -51,7 +51,7 @@ signals:
     void signalSaveNameCal(const QString&);
     void signalSaveNameVol(const QString&);
 
-    void signalUnLock();
+
     void signalConnectWriteLog(const QString);
 
     //сигнал на открытие com-порта для вольтметра

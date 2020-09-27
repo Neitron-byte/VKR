@@ -60,6 +60,7 @@ void DeviceDialog::SetNameComPort(QString ComCal, QString ComVal)
 {
     m_NamePortCal = ComCal;
     m_NamePortVol = ComVal;
+
     ui->comboBox_Com_Cal->addItem(m_NamePortCal);
     ui->comboBox_Com_Vol->addItem(m_NamePortVol);
 }
@@ -116,6 +117,8 @@ void DeviceDialog::on_pushButton_Apply_Vol_clicked()
 
 void DeviceDialog::on_pushButton_Con_Vol_clicked()
 {
+    if(m_NamePortVol != ""){
+
     if(ui->pushButton_Con_Vol->text() == "Connect"){
         emit signalOpenVol();
         isOpenComVol = true;
@@ -125,11 +128,14 @@ void DeviceDialog::on_pushButton_Con_Vol_clicked()
         isOpenComVol = false;
         ui->pushButton_Con_Vol->setText("Connect");
     }
-
+ } else{
+        emit signalConnectWriteLog("Com for Voltmeter not assigned");
+    }
 }
 
 void DeviceDialog::on_pushButton_Con_Cal_clicked()
 {
+    if(m_NamePortCal != ""){
     if(ui->pushButton_Con_Cal->text() == "Connect"){
         emit signalOpenCal();
         isOpenComCal = true;
@@ -139,15 +145,19 @@ void DeviceDialog::on_pushButton_Con_Cal_clicked()
         isOpenComCal = false;
         ui->pushButton_Con_Cal->setText("Connect");
     }
+    } else{
+        emit signalConnectWriteLog("Com for Cilabrator not assigned");
+    }
 
 }
 
 void DeviceDialog::on_pushButton_clicked()
 {
     if(isOpenComCal && isOpenComVol){
-        emit signalUnLock();
+
         emit CreatAlgorithm();
     }
+
 
     this->hide();
 }

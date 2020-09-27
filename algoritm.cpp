@@ -21,30 +21,70 @@ void algoritm::SelectProcess()
 void algoritm::inaccuracyDC_AC()
 {
     qDebug()<<"inaccuracyDC_AC";
+    //НА МОЕЙ СОВЕСТИ) НУЖНО ПРАВИЛЬНО ОРГАНИЗОВАТЬ НАСЛЕДОВАНИЕ
     CalibratorCom* Cal = reinterpret_cast<CalibratorCom*>(m_Calibrator);
-
+    VoltmeterCom* Voltmeter = reinterpret_cast<VoltmeterCom*>(m_Voltmeter);
 
     if(m_Voltage > 0 && m_OperationNumber > 0 && m_NumberCycles > 0){
 
         for (int var = 0; var < m_NumberCycles; ++var) {
+            qDebug() << "Thread algoritm" << this->thread();
+
+            //Команда на подачу пер напр V частотой F-1кГц
             if(Cal->SendFreqSerial(m_Voltage,m_Frequency)){
                 emit error_("Error Send AC");
             }
 
 
+
             this->thread()->msleep(50);
 
-            qDebug() << "Thread algoritm" << this->thread();
-            //Отправка в вольтметр и получение данных
 
+            //Получение показаний с вольтметра 1 канал
+            Voltmeter->Measurement(1);
+
+            this->thread()->msleep(50);
+
+            //Получение показаний с вольтметра 2 канал
+            Voltmeter->Measurement(2);
+
+            this->thread()->msleep(50);
+
+            //Команда на подачу пост напр номиналом V
             if (Cal->SendSerial(m_Voltage)){
                 emit error_("Error Send DC");
             }
-            //Отправка в вольтметр и получение данных
+
+            this->thread()->msleep(50);
+
+
+            //Получение показаний с вольтметра
+
+            //Команда на подачу пост напр номиналом V  отр полярности
+            if (Cal->SendSerial(-m_Voltage)){
+                emit error_("Error Send Neg DC");
+            }
+            this->thread()->msleep(50);
+
+
+            //Получение показаний с вольтметра
+
+
+            //Команда на подачу пер напр V частотой F-1кГц
+            if(Cal->SendFreqSerial(m_Voltage,m_Frequency)){
+                emit error_("Error Send AC(2)");
+            }
+
 
         }
 
+        emit EndProcess();
+
+
+    } else{
+        emit error_("Error_ V or Num or F = 0");
     }
+
 
 }
 

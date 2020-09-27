@@ -30,24 +30,39 @@ void PresenterDevice::creatDevice(const int id)
 
 void PresenterDevice::slotOpenComCal()
 {
+
     if(m_Calibrator->OpenSerial()){
             emit signalWriteStatusCal(tr("Connected to %1 : %2, %3, %4, %5, %6")
                                       .arg(m_SettingsComCal.m_name).arg(m_SettingsComCal.m_baudRate).arg(m_SettingsComCal.m_dataBits)
                                       .arg(m_SettingsComCal.m_parity).arg(m_SettingsComCal.m_stopBits).arg(m_SettingsComCal.m_flowControl));
+
+        isOpenCOMCal = true;
+        this->CheckConnect();
+
+
     } else{
 
         signalWriteStatusCal(tr("Open error"));
+
+
     }
+
 
 
 }
 
 void PresenterDevice::slotOpenComVol()
 {
+
     if(m_Voltmeter->OpenSerial()){
         emit signalWriteStatusVol(tr("Connected to %1 : %2, %3, %4, %5, %6")
                                   .arg(m_SettingsComVolt.m_name).arg(m_SettingsComVolt.m_baudRate).arg(m_SettingsComVolt.m_dataBits)
                                   .arg(m_SettingsComVolt.m_parity).arg(m_SettingsComVolt.m_stopBits).arg(m_SettingsComVolt.m_flowControl));
+    isOpenCOMVol = true;
+
+
+    this->CheckConnect();
+
     } else{
         signalWriteStatusVol(tr("Open error"));
     }
@@ -58,6 +73,7 @@ void PresenterDevice::slotCloseComCal()
 
     if(m_Calibrator->CloseSerial()){
         signalWriteStatusCal("Disconnect");
+        isOpenCOMCal = false;
     }
     else{
         signalWriteStatusCal("Serial is close");
@@ -68,6 +84,7 @@ void PresenterDevice::slotCloseComVol()
 {
     if(m_Voltmeter->CloseSerial()){
         signalWriteStatusVol("Disconnect");
+        isOpenCOMVol = false;
     }
     else{
         signalWriteStatusVol("Serial is close");
@@ -81,6 +98,13 @@ void PresenterDevice::slotCreatAlgoritm()
 }
 
 
+
+void PresenterDevice::CheckConnect()
+{
+    if ( isOpenCOMCal && isOpenCOMVol){
+        emit signalUnLock();
+    }
+}
 
 void PresenterDevice::SearchComPorts()
 {

@@ -29,6 +29,7 @@ public:
         m_SettingsCom.m_flowControl = static_cast<QSerialPort::FlowControl>(fC);
         qDebug() << m_SettingsCom.m_flowControl;
 
+
     }
     virtual ~DeviceCom() = 0;
 
@@ -70,9 +71,6 @@ protected:
     };
     //текущие настройки порта
     SettingsComPort m_SettingsCom;
-
-    //Номинальное напряжение, на которое рассчитан преобразователь
-    float m_Voltage;
 
 
 

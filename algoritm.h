@@ -32,6 +32,7 @@ public:
 
 signals:
      void error_(const QString);
+     void EndProcess();
 
 public slots:
     void setOperatioNumber(const uint);

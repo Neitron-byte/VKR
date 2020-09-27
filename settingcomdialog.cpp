@@ -162,7 +162,7 @@ bool SettingComDialog::CheckApply()
 
 void SettingComDialog::on_ApplyButton_Cal_clicked()
 {
-    if (!m_List.isEmpty()){
+    if (!m_List.isEmpty() && ui->SetComBox_Cal->currentText() != ""){
 
 //    qDebug()<<ui->SetComBox_Cal->currentText();
 //            qDebug()<<ui->BoudrateBox_Cal->itemData(ui->BoudrateBox_Cal->currentIndex()).toUInt();
@@ -186,6 +186,8 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
         this->TransmitNameCom(ui->SetComBox_Cal->currentText(),ui->SetComBox_Volt->currentText());
         hide();
     }
+    } else {
+        emit signalCOMWriteLog("Com for Cilabrator not assigned");
     }
 
 }
@@ -194,7 +196,7 @@ void SettingComDialog::on_ApplyButton_Cal_clicked()
 
 void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
 {
-    if (!m_List.isEmpty()){
+    if (!m_List.isEmpty() && ui->SetComBox_Volt->currentText() != ""){
     SignalSetSettingsVol (ui->SetComBox_Volt->currentText(),
                           ui->BoudrateBox_Volt->itemData(ui->BoudrateBox_Volt->currentIndex()).toUInt(),
                           ui->DataBitsBox_Volt->itemData(ui->DataBitsBox_Volt->currentIndex()).toUInt(),
@@ -209,7 +211,10 @@ void SettingComDialog::on_ApplyVoltButton_Volt_clicked()
        this->TransmitNameCom(ui->SetComBox_Cal->currentText(),ui->SetComBox_Volt->currentText());
         hide();
     }
+    } else{
+    emit signalCOMWriteLog("Com for Voltmeter not assigned");
     }
+
 }
 
 void SettingComDialog::on_pushButton_Edit_Cal_clicked()

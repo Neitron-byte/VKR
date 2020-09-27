@@ -43,6 +43,8 @@ signals:
 private:
     QSerialPort* m_serial = nullptr;
 
+
+
 };
 
 #endif // CALIBRATORCOM_H

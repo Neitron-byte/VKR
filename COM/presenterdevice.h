@@ -16,7 +16,7 @@ class PresenterDevice : public QObject
 {
     Q_OBJECT
 
-
+    void CheckConnect();
 
 public:
     explicit PresenterDevice(const Data* data = nullptr, const algoritm* algor= nullptr, QObject *parent = nullptr): QObject(parent)
@@ -26,7 +26,18 @@ public:
         m_name_calibrator = "";
         m_name_voltmeter = "";
         //this->SearchComPorts();
+        isOpenCOMCal = false;
+        isOpenCOMVol = false;
 
+
+    }
+    ~PresenterDevice(){
+        if(m_Calibrator!= nullptr){
+            delete m_Calibrator;
+        }
+        if(m_Voltmeter != nullptr){
+            delete m_Voltmeter;
+        }
     }
 
 public slots:
@@ -66,6 +77,8 @@ signals:
     void signalWriteStatusVol(const QString&);
     void SetPointDevice(const DeviceCom*, const DeviceCom*);
 
+    //сигнал разбокировки окон после коннекта с девайсами
+    void signalUnLock();
 
 private:
     struct SettingsCurrentComPort {
@@ -83,10 +96,13 @@ private:
     //калибратор
     QString m_name_calibrator;
     CalibratorCom* m_Calibrator = nullptr;
+    bool isOpenCOMCal;
+
 
     //вольтметр
     QString m_name_voltmeter;
     VoltmeterCom* m_Voltmeter = nullptr;
+    bool isOpenCOMVol;
 
     //список доступных COM-портов
     QList<QString> m_ListComPorts;

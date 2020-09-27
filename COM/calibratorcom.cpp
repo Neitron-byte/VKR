@@ -26,6 +26,7 @@ bool CalibratorCom::CloseSerial()
 {
     if (m_serial->isOpen()){
         m_serial->close();
+
         return true;
     }
     return false;
@@ -34,7 +35,6 @@ bool CalibratorCom::CloseSerial()
 void CalibratorCom::CreatSerial()
 {
     m_serial = new QSerialPort;
-
 }
 
 bool CalibratorCom::SendSerial(float V)
@@ -43,9 +43,9 @@ bool CalibratorCom::SendSerial(float V)
     m_serial->write(SendData.toLocal8Bit());
     qDebug()<<"DC"<< SendData.toLocal8Bit();
     if(m_serial->waitForBytesWritten(100)){
-      return  false;
+      return  true;
      } else{
-        return true;
+        return false;
     }
 
 }
@@ -56,9 +56,9 @@ bool CalibratorCom::SendFreqSerial(float V, uint F)
     m_serial->write(SendData.toLocal8Bit());
     qDebug()<<"Freq"<<SendData.toLocal8Bit();
     if(m_serial->waitForBytesWritten(100)){
-      return  false;
+      return  true;
      } else{
-        return true;
+        return false;
     }
 }
 

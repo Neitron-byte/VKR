@@ -20,6 +20,7 @@ public:
         m_serial = new QSerialPort();
 
         connect(m_serial,SIGNAL(errorOccurred(QSerialPort::SerialPortError)), this, SLOT(handleError(QSerialPort::SerialPortError)));
+
     }
 
     ~VoltmeterCom(){
@@ -29,6 +30,7 @@ public:
     virtual bool OpenSerial() override;
     virtual bool CloseSerial() override;
     virtual void CreatSerial() override;
+            void Measurement(uint);
 
 
 
@@ -41,6 +43,8 @@ signals:
 
 private:
     QSerialPort* m_serial = nullptr;
+
+
 };
 
 #endif // VOLTMETERCOM_H
