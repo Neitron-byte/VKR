@@ -19,10 +19,10 @@ class PresenterDevice : public QObject
     void CheckConnect();
 
 public:
-    explicit PresenterDevice(const Data* data = nullptr, const algoritm* algor= nullptr, QObject *parent = nullptr): QObject(parent)
+    explicit PresenterDevice(/*const Data* data = nullptr, const algoritm* algor= nullptr,*/ QObject *parent = nullptr): QObject(parent)
     {
-        m_data = data;
-        m_algoritm = algor;
+//        m_data = data;
+//        m_algoritm = algor;
         m_name_calibrator = "";
         m_name_voltmeter = "";
         //this->SearchComPorts();
@@ -108,10 +108,10 @@ private:
     QList<QString> m_ListComPorts;
 
     //алгоритмы поверки
-    const algoritm* m_algoritm = nullptr;
+    //const algoritm* m_algoritm = nullptr;
 
     //хранение данных
-    const Data* m_data = nullptr;
+    //const Data* m_data = nullptr;
 };
 
 #endif // PRESENTERDEVICE_H

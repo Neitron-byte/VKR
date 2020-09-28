@@ -29,6 +29,8 @@ private:
     QString m_Model;
     QString m_Number;
 
+    //
+
 
 };
 

@@ -57,7 +57,7 @@ signals:
     //cигнал на сохранение данных
     void signalSaveData(const float, const QString , const QString ,const QString );
     //cигнал на сохранение данных в алгоритм
-    void signalSaveDataDevice(bool,bool,const float);
+    void signalSaveDataDevice(uint,uint,const float);
 
 
 

@@ -6,6 +6,7 @@
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
+#include <QByteArray>
 
 #include "devicecom.h"
 
@@ -30,7 +31,8 @@ public:
     virtual bool OpenSerial() override;
     virtual bool CloseSerial() override;
     virtual void CreatSerial() override;
-            void Measurement(uint);
+
+    QString Measurement(uint);
 
 
 

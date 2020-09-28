@@ -22,11 +22,13 @@ void MainWindow::SetLenght(int Num)
 void MainWindow::AddItem()
 {
     //данные о поверяемом устр-ве
-    ui->comboBox_typeverdev->addItem(QStringLiteral("With squa func"),QVariant("squa"));
-    ui->comboBox_typeverdev->addItem(QStringLiteral("With line func"),QVariant("line"));
+    ui->comboBox_typeverdev->addItem(QStringLiteral("With line func"),QVariant(1));
+    ui->comboBox_typeverdev->addItem(QStringLiteral("With squa func"),QVariant(2));
 
-    ui->comboBox_typerefdev->addItem(QStringLiteral("With squa func"),QVariant("squa"));
-    ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"),QVariant("line"));
+
+
+    ui->comboBox_typerefdev->addItem(QStringLiteral("With line func"),QVariant(1));
+    ui->comboBox_typerefdev->addItem(QStringLiteral("With squa func"),QVariant(2));
 
 
 }
@@ -109,7 +111,7 @@ void MainWindow::connects()
 
     //сохранение данных из gui
     connect(this,SIGNAL(signalSaveData(float,QString,QString,QString)),m_data,SLOT(SetData(float,QString,QString,QString)));
-    connect(this,SIGNAL(signalSaveDataDevice(bool,bool,float)),m_algoritm,SLOT(slotSaveDataDevice(bool,bool,float)));
+    connect(this,SIGNAL(signalSaveDataDevice(uint,uint,float)),m_algoritm,SLOT(slotSaveDataDevice(uint,uint,float)));
 
     //выбор процедуры поверки
     connect(m_ModeSelectDialog,SIGNAL(signalOperation(uint)),m_algoritm,SLOT(setOperatioNumber(uint)));
@@ -132,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_DeviceDialog (new DeviceDialog),
       m_ModeSelectDialog(new ModeSelectialog),
       m_data(new Data),
-      m_algoritm(new algoritm),
+      m_algoritm(new algoritm(m_data)),
       m_DialogNumCycles (new DialogNumCycles)
 
 
@@ -147,9 +149,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     //отдельный поток для взаимодействия с приборами
     m_Thread = new QThread;
-    m_PresenterDevice = new PresenterDevice(m_data,m_algoritm);
+    m_PresenterDevice = new PresenterDevice();/*m_data,m_algoritm);*/
     m_PresenterDevice->moveToThread(m_Thread);
     m_algoritm->moveToThread(m_Thread);
+    m_data->moveToThread(m_Thread);
     connect(m_Thread, SIGNAL(finished()), m_algoritm,SLOT(deleteLater()));
     connect(m_Thread, SIGNAL(finished()), m_PresenterDevice, SLOT(deleteLater()));
 
@@ -329,19 +332,13 @@ void MainWindow::on_pushButton_save_clicked()
              QString Name = ui->lineEdit_fullname->text();
              QString Model = ui->lineEdit_ver_dev->text();
              QString Num = ui->lineEdit_Num->text();
-             bool TypeDev, TypeRefDev;
-             qDebug()<< ui->comboBox_typeverdev->currentData();
-             qDebug()<< ui->comboBox_typerefdev->currentData();
-             if(ui->comboBox_typeverdev->currentData().toString() == "squa"){
-                 TypeDev = true;
-             } else{
-                 TypeDev = false;
-             }
-             if(ui->comboBox_typerefdev->currentData().toString() == "squa"){
-                 TypeRefDev = true;
-             } else{
-                 TypeRefDev = false;
-             }
+
+             qDebug()<< ui->comboBox_typeverdev->currentData().toUInt();
+             qDebug()<< ui->comboBox_typerefdev->currentData().toUInt();
+
+             uint TypeDev = ui->comboBox_typeverdev->currentData().toUInt();
+             uint TypeRefDev = ui->comboBox_typerefdev->currentData().toUInt();
+
              float Volt = ui->doubleSpinBox_Volt->value();
              qDebug()<<"SlotSendData";
              qDebug()<<Temp;
