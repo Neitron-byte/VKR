@@ -17,13 +17,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    COM/calibratorcom.cpp \
-    COM/devicecom.cpp \
+    COM/calibrator.cpp \
+    COM/h4_7.cpp \
+    COM/hp34420a.cpp \
     COM/presenterdevice.cpp \
-    COM/voltmetercom.cpp \
+    COM/voltmeter.cpp \
     algoritm.cpp \
     data.cpp \
     devicedialog.cpp \
+    dialogcorrectref.cpp \
     dialognumcycles.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -31,13 +33,15 @@ SOURCES += \
     settingcomdialog.cpp
 
 HEADERS += \
-    COM/calibratorcom.h \
-    COM/devicecom.h \
+    COM/calibrator.h \
+    COM/h4_7.h \
+    COM/hp34420a.h \
     COM/presenterdevice.h \
-    COM/voltmetercom.h \
+    COM/voltmeter.h \
     algoritm.h \
     data.h \
     devicedialog.h \
+    dialogcorrectref.h \
     dialognumcycles.h \
     mainwindow.h \
     modeselectialog.h \
@@ -46,6 +50,7 @@ HEADERS += \
 
 FORMS += \
     devicedialog.ui \
+    dialogcorrectref.ui \
     dialognumcycles.ui \
     mainwindow.ui \
     modeselectialog.ui \

@@ -1,6 +1,7 @@
 #include "algoritm.h"
 #include "QThread"
 #include "QInputDialog"
+#include "QInputDialog"
 
 void algoritm::SelectProcess()
 {
@@ -23,10 +24,7 @@ void algoritm::inaccuracyDC_AC()
 {
     qDebug()<<"inaccuracyDC_AC";
 
-    //НА МОЕЙ СОВЕСТИ) НУЖНО ПРАВИЛЬНО ОРГАНИЗОВАТЬ НАСЛЕДОВАНИЕ
 
-    CalibratorCom* Cal = reinterpret_cast<CalibratorCom*>(m_Calibrator);
-    VoltmeterCom* Voltmeter = reinterpret_cast<VoltmeterCom*>(m_Voltmeter);
 
     if(m_Voltage > 0 && m_OperationNumber > 0 && m_NumberCycles > 0){
 
@@ -36,12 +34,14 @@ void algoritm::inaccuracyDC_AC()
             qDebug() << "Thread algoritm" << this->thread();
             uint Count = 0;
 //Команда на подачу пер напр V частотой F-1кГц
-            if(Cal->SendFreqSerial(m_Voltage,m_Frequency)){
+            if(m_Calibrator->SendFreqSerial(m_Voltage,m_Frequency)){
                 emit error_("Error Send AC");
             }
 
+            this->thread()->msleep(50);
+
             //Получение показаний с вольтметра 1 канал
-            QString Response = Voltmeter->Measurement(1);
+            QString Response = m_Voltmeter->Measurement(1);
 
             //проверка что пришло
             if(this->checkResponse(Response)){
@@ -51,7 +51,7 @@ void algoritm::inaccuracyDC_AC()
 
 
            //Получение показаний с вольтметра 2 канал
-            Response = Voltmeter->Measurement(2);
+            Response = m_Voltmeter->Measurement(2);
 
             //проверка
             if(this->checkResponse(Response)){
@@ -60,13 +60,17 @@ void algoritm::inaccuracyDC_AC()
             }
 
             Count++;
+
+
  //Команда на подачу пост напр номиналом V
-            if (Cal->SendSerial(m_Voltage)){
+            if (m_Calibrator->SendSerial(m_Voltage)){
                 emit error_("Error Send DC");
             }
 
+             this->thread()->msleep(50);
+
      //Получение показаний с вольтметра 1 канал
-            Response = Voltmeter->Measurement(1);
+            Response = m_Voltmeter->Measurement(1);
 
          //проверка что пришло
             if(this->checkResponse(Response)){
@@ -76,7 +80,7 @@ void algoritm::inaccuracyDC_AC()
 
 
     //Получение показаний с вольтметра 2 канал
-            Response=Voltmeter->Measurement(2);
+            Response= m_Voltmeter->Measurement(2);
 
         //проверка
             if(this->checkResponse(Response)){
@@ -88,12 +92,14 @@ void algoritm::inaccuracyDC_AC()
 
 
 //Команда на подачу пост напр номиналом V  отр полярности
-            if (Cal->SendSerial(-m_Voltage)){
+            if (m_Calibrator->SendSerial(-m_Voltage)){
                 emit error_("Error Send Neg DC");
             }
 
+            this->thread()->msleep(50);
+
             //Получение показаний с вольтметра 1 канал
-            Response = Voltmeter->Measurement(1);
+            Response = m_Voltmeter->Measurement(1);
 
             //проверка что пришло
             if(this->checkResponse(Response)){
@@ -103,7 +109,7 @@ void algoritm::inaccuracyDC_AC()
 
 
            //Получение показаний с вольтметра 2 канал
-            Response=Voltmeter->Measurement(2);
+            Response= m_Voltmeter->Measurement(2);
 
             //проверка
             if(this->checkResponse(Response)){
@@ -115,12 +121,14 @@ void algoritm::inaccuracyDC_AC()
 
 
 //Команда на подачу пер напр V частотой F-1кГц
-            if(Cal->SendFreqSerial(m_Voltage,m_Frequency)){
+            if(m_Calibrator->SendFreqSerial(m_Voltage,m_Frequency)){
                 emit error_("Error Send AC(2)");
             }
 
+              this->thread()->msleep(50);
+
             //Получение показаний с вольтметра 1 канал
-            Response = Voltmeter->Measurement(1);
+            Response = m_Voltmeter->Measurement(1);
 
             //проверка что пришло
             if(this->checkResponse(Response)){
@@ -130,7 +138,7 @@ void algoritm::inaccuracyDC_AC()
 
 
            //Получение показаний с вольтметра 2 канал
-            Response=Voltmeter->Measurement(2);
+            Response= m_Voltmeter->Measurement(2);
 
             //проверка
             if(this->checkResponse(Response)){
@@ -143,10 +151,10 @@ void algoritm::inaccuracyDC_AC()
             auto Rez = this->calculate();
 
             Summ+=Rez;
-
+            qDebug()<<Summ;
         }
 
-        //this->InputCorrect();
+
 
         auto Rezult = Summ/m_NumberCycles + m_CorrectRef;
 
@@ -164,16 +172,9 @@ void algoritm::inaccuracyDC_AC()
 
 
 
-
-
-
 void algoritm::freqVerification()
 {
     qDebug()<<"freqVerification";
-
-
-
-
 
     emit EndProcess();
 }
@@ -206,12 +207,12 @@ float algoritm::calculate()
 
     //разность погрешностей
 
-    emit InputCorrect();
-
     float RezultDelta = deltaVer - deltaRef;
 
     return RezultDelta;
 }
+
+
 
 
 
@@ -222,10 +223,13 @@ void algoritm::setOperatioNumber(const uint Num)
     //this->SelectProcess();
 }
 
-void algoritm::setPoint(const DeviceCom * Cal, const DeviceCom * Voltmeter )
+void algoritm::setPoint(const Calibrator * Cal, const Voltmeter * Volt )
 {
-    m_Calibrator = const_cast<DeviceCom *>(Cal);
-    m_Voltmeter = const_cast<DeviceCom *>(Voltmeter);
+    qDebug()<<"Type id : ";
+    qDebug()<<typeid(Cal).name();
+    qDebug()<<typeid(Volt).name();
+    m_Calibrator = const_cast<Calibrator *>(Cal);
+    m_Voltmeter = const_cast<Voltmeter *>(Volt);
 }
 
 void algoritm::slotSaveDataDevice(uint typeDev, uint typeRefDev, float V)
@@ -248,4 +252,10 @@ void algoritm::StartWork()
     if(m_OperationNumber != 0){
     this->SelectProcess();
     }
+}
+
+void algoritm::setValueCorrect(float val)
+{
+    m_CorrectRef = val;
+    qDebug()<< "Val: "<<m_CorrectRef;
 }

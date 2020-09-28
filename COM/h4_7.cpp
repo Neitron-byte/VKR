@@ -1,8 +1,6 @@
-#include "calibratorcom.h"
-#include "QMessageBox"
+#include "h4_7.h"
 
-
-bool CalibratorCom::OpenSerial()
+bool H4_7::OpenSerial()
 {
     qDebug()<<"Cal Com Open";
     qDebug()<<m_serial->thread();
@@ -22,7 +20,7 @@ bool CalibratorCom::OpenSerial()
     }
 }
 
-bool CalibratorCom::CloseSerial()
+bool H4_7::CloseSerial()
 {
     if (m_serial->isOpen()){
         m_serial->close();
@@ -32,17 +30,13 @@ bool CalibratorCom::CloseSerial()
     return false;
 }
 
-void CalibratorCom::CreatSerial()
-{
-    m_serial = new QSerialPort;
-}
 
-bool CalibratorCom::SendSerial(float V)
+bool H4_7::SendSerial(float V)
 {
     QString SendData = "UD"+ QString::number(V) +"\r\n";
     m_serial->write(SendData.toLocal8Bit());
     qDebug()<<"DC"<< SendData.toLocal8Bit();
-    if(m_serial->waitForBytesWritten(100)){
+    if(m_serial->waitForBytesWritten(m_waitTimeout)){
       return  true;
      } else{
         return false;
@@ -50,12 +44,12 @@ bool CalibratorCom::SendSerial(float V)
 
 }
 
-bool CalibratorCom::SendFreqSerial(float V, uint F)
+bool H4_7::SendFreqSerial(float V, uint F)
 {
     QString SendData = "UA"+ QString::number(V)+"F"+QString::number(F)+"\r\n";
     m_serial->write(SendData.toLocal8Bit());
     qDebug()<<"Freq"<<SendData.toLocal8Bit();
-    if(m_serial->waitForBytesWritten(100)){
+    if(m_serial->waitForBytesWritten(m_waitTimeout)){
       return  true;
      } else{
         return false;
@@ -65,7 +59,7 @@ bool CalibratorCom::SendFreqSerial(float V, uint F)
 
 
 
-void CalibratorCom::handleError(QSerialPort::SerialPortError error)
+void H4_7::handleError(QSerialPort::SerialPortError error)
 {
     if (error == QSerialPort::ResourceError) {
 

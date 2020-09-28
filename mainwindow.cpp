@@ -3,6 +3,7 @@
 #include <QIntValidator>
 #include <QStringList>
 #include <QTextEdit>
+#include <QInputDialog>
 
 void MainWindow::SetLenght(int Num)
 {
@@ -85,7 +86,7 @@ void MainWindow::connects()
 
     //создание объектов
     connect(m_DeviceDialog,SIGNAL(signalCreatDevice(int)),m_PresenterDevice,SLOT(slotCreatDevice(int)));
-    connect(m_PresenterDevice,SIGNAL(SetPointDevice(const DeviceCom*,const DeviceCom*)),m_algoritm,SLOT(setPoint(const DeviceCom*,const DeviceCom*)));
+    connect(m_PresenterDevice,SIGNAL(SetPointDevice(const Calibrator*,const Voltmeter*)),m_algoritm,SLOT(setPoint(const Calibrator*,const Voltmeter*)));
 
     //for open Coms
     connect(m_DeviceDialog,SIGNAL(signalOpenCal()),m_PresenterDevice,SLOT(slotOpenComCal()));
@@ -120,10 +121,17 @@ void MainWindow::connects()
     connect(m_ModeSelectDialog,SIGNAL(signalEnterNum()),this,SLOT(EnterNumberCycles()));
     connect(m_DialogNumCycles,SIGNAL(signalSetNum(uint)),m_algoritm,SLOT(setNumberCycles(uint)));
 
+    connect(m_DialogNumCycles,SIGNAL(signalshowInputCor()),this,SLOT(slotInputCorrect()));
+    connect(m_DialogCorrectRef,SIGNAL(signalSetCor(float)),m_algoritm,SLOT(setValueCorrect(float)));
+
     //сигнал запуска поверки
-    connect(m_DialogNumCycles,SIGNAL(signalStartWork()),m_algoritm,SLOT(StartWork()));
+    connect(m_DialogCorrectRef,SIGNAL(signalStartWork()),m_algoritm,SLOT(StartWork()));
+
+
     //cигнал окончания проверки
     connect(m_algoritm,SIGNAL(EndProcess()),this,SLOT(slotViewModeDialog()));
+
+
 
 }
 
@@ -135,11 +143,18 @@ MainWindow::MainWindow(QWidget *parent)
       m_ModeSelectDialog(new ModeSelectialog),
       m_data(new Data),
       m_algoritm(new algoritm(m_data)),
-      m_DialogNumCycles (new DialogNumCycles)
+      m_DialogNumCycles (new DialogNumCycles),
+      m_DialogCorrectRef(new DialogCorrectRef)
 
 
 {
     ui->setupUi(this);
+
+     m_listDialog.append(m_DialogNumCycles);
+     m_listDialog.append(m_DialogCorrectRef);
+
+
+
 
     //Statusbar
     m_status1 = new QLabel;
@@ -298,6 +313,11 @@ void MainWindow::EnterNumberCycles()
     m_DialogNumCycles->show();
 }
 
+void MainWindow::slotInputCorrect()
+{
+    m_DialogCorrectRef->show();
+}
+
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
@@ -314,6 +334,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 void MainWindow::slotViewModeDialog()
 {
     m_ModeSelectDialog->show();
+
 
 }
 

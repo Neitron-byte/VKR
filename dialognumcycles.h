@@ -17,6 +17,7 @@ public:
 signals:
     void signalSetNum(uint);
     void signalStartWork();
+    void signalshowInputCor();
 
 private slots:
     void on_pushButton_Next_clicked();

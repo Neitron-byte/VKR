@@ -3,20 +3,23 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include "QDebug"
 #include "QThread"
+#include "COM/h4_7.h"
+#include "COM/hp34420a.h"
 
 void PresenterDevice::creatDevice(const int id)
 {
     switch (id) {
     case 100:
         qDebug()<<"Cal creat";
-        m_Calibrator = new CalibratorCom(m_SettingsComCal.m_name,m_SettingsComCal.m_baudRate,m_SettingsComCal.m_dataBits,
+        m_Calibrator = new H4_7(m_SettingsComCal.m_name,m_SettingsComCal.m_baudRate,m_SettingsComCal.m_dataBits,
                                          m_SettingsComCal.m_parity,m_SettingsComCal.m_stopBits,m_SettingsComCal.m_flowControl);
+
         connect(m_Calibrator,SIGNAL(Error_(QString)),SIGNAL(signalWriteStatusCal(QString)));
         break;
 
     case 200:
         qDebug()<<"Vol creat";
-        m_Voltmeter = new VoltmeterCom(m_SettingsComVolt.m_name,m_SettingsComVolt.m_baudRate,m_SettingsComVolt.m_dataBits,
+        m_Voltmeter = new HP34420A (m_SettingsComVolt.m_name,m_SettingsComVolt.m_baudRate,m_SettingsComVolt.m_dataBits,
                                        m_SettingsComVolt.m_parity,m_SettingsComVolt.m_stopBits,m_SettingsComVolt.m_flowControl);
         connect(m_Voltmeter,SIGNAL(Error_(QString)),SIGNAL(signalWriteStatusVol(QString)));
         break;
@@ -94,7 +97,7 @@ void PresenterDevice::slotCloseComVol()
 void PresenterDevice::slotCreatAlgoritm()
 {
     emit SetPointDevice(m_Calibrator,m_Voltmeter);
-    //m_algoritm = new algoritm(m_Calibrator,m_Voltmeter);
+
 }
 
 

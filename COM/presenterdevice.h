@@ -2,15 +2,21 @@
 #define PRESENTERDEVICE_H
 
 #include <QObject>
-#include "devicecom.h"
-#include "calibratorcom.h"
-#include "voltmetercom.h"
+//#include "devicecom.h"
+//#include "calibratorcom.h"
+//#include "voltmetercom.h"
+
+#include "COM/calibrator.h"
+#include "COM/voltmeter.h"
+
+
+
 #include <QList>
 #include <QString>
 #include "algoritm.h"
 #include "Data.h"
 
-class algoritm;
+
 
 class PresenterDevice : public QObject
 {
@@ -19,13 +25,12 @@ class PresenterDevice : public QObject
     void CheckConnect();
 
 public:
-    explicit PresenterDevice(/*const Data* data = nullptr, const algoritm* algor= nullptr,*/ QObject *parent = nullptr): QObject(parent)
+    explicit PresenterDevice(QObject *parent = nullptr): QObject(parent)
     {
-//        m_data = data;
-//        m_algoritm = algor;
+
         m_name_calibrator = "";
         m_name_voltmeter = "";
-        //this->SearchComPorts();
+
         isOpenCOMCal = false;
         isOpenCOMVol = false;
 
@@ -75,7 +80,7 @@ signals:
     //передача сообщений о операциях и ошибках на главное окно
     void signalWriteStatusCal(const QString&);
     void signalWriteStatusVol(const QString&);
-    void SetPointDevice(const DeviceCom*, const DeviceCom*);
+    void SetPointDevice(const Calibrator*, const Voltmeter*);
 
     //сигнал разбокировки окон после коннекта с девайсами
     void signalUnLock();
@@ -95,23 +100,19 @@ private:
 
     //калибратор
     QString m_name_calibrator;
-    CalibratorCom* m_Calibrator = nullptr;
+    Calibrator* m_Calibrator = nullptr;
     bool isOpenCOMCal;
 
 
     //вольтметр
     QString m_name_voltmeter;
-    VoltmeterCom* m_Voltmeter = nullptr;
+    Voltmeter* m_Voltmeter = nullptr;
     bool isOpenCOMVol;
 
     //список доступных COM-портов
     QList<QString> m_ListComPorts;
 
-    //алгоритмы поверки
-    //const algoritm* m_algoritm = nullptr;
 
-    //хранение данных
-    //const Data* m_data = nullptr;
 };
 
 #endif // PRESENTERDEVICE_H

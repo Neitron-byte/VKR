@@ -1,8 +1,8 @@
-#include "voltmetercom.h"
-#include <QMessageBox>
+#include "hp34420a.h"
+#include <QDebug>
+#include <QThread>
 
-
-bool VoltmeterCom::OpenSerial()
+bool HP34420A::OpenSerial()
 {
     qDebug()<<"Vol Com Open";
     qDebug()<<m_serial->thread();
@@ -33,7 +33,7 @@ bool VoltmeterCom::OpenSerial()
 
 }
 
-bool VoltmeterCom::CloseSerial()
+bool HP34420A::CloseSerial()
 {
     if (m_serial->isOpen()){
         m_serial->close();
@@ -42,12 +42,9 @@ bool VoltmeterCom::CloseSerial()
     return false;
 }
 
-void VoltmeterCom::CreatSerial()
-{
-    m_serial = new QSerialPort;
-}
 
-QString VoltmeterCom::Measurement(uint ch)
+
+QString HP34420A::Measurement(uint ch)
 {
     //Отправка команды на подготовку канала к измерениям
     QString Request = "ROUT:TERM FRON"+QString::number(ch)+"\r\n";
@@ -56,6 +53,8 @@ QString VoltmeterCom::Measurement(uint ch)
         Request = "READ?\r\n";
         m_serial->write(Request.toLocal8Bit());
         if(m_serial->waitForBytesWritten()) {
+
+               this->thread()->msleep(50);
 
               //чтение из порта
                 if (m_serial->waitForBytesWritten()) {
@@ -81,7 +80,7 @@ QString VoltmeterCom::Measurement(uint ch)
 
 
 
-void VoltmeterCom::handleError(QSerialPort::SerialPortError error)
+void HP34420A::handleError(QSerialPort::SerialPortError error)
 {
     if (error == QSerialPort::ResourceError) {
 
@@ -90,3 +89,4 @@ void VoltmeterCom::handleError(QSerialPort::SerialPortError error)
         this->CloseSerial();
     }
 }
+

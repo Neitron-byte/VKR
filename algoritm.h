@@ -4,9 +4,9 @@
 #include <QObject>
 
 #include "COM/presenterdevice.h"
-#include "COM/devicecom.h"
-#include "COM/calibratorcom.h"
-#include "COM/voltmetercom.h"
+//#include "COM/devicecom.h"
+#include "COM/calibrator.h"
+#include "COM/voltmeter.h"
 #include "QDebug"
 #include "data.h"
 
@@ -21,7 +21,7 @@ class algoritm : public QObject
     void freqVerification();
     bool checkResponse(const QString&);
     float calculate();
-    void InputCorrect();
+
 
 public:
     explicit algoritm (Data* pData, QObject *parent = nullptr) : QObject(parent)
@@ -52,27 +52,27 @@ signals:
      void error_(const QString);
      void EndProcess();
      void SaveData(const QString&);
-     void InputCorrect();
+
+
 
 public slots:
     void setOperatioNumber(const uint);
-    void setPoint(const DeviceCom*, const DeviceCom*);
+    void setPoint(const Calibrator*, const Voltmeter*);
     void slotSaveDataDevice(uint , uint , float );
     void setNumberCycles(uint);
     void StartWork();
+    void setValueCorrect(float );
 
 private:
     //указатели на созданные калибратор и вольтметр
-    DeviceCom* m_Calibrator = nullptr;
-    DeviceCom* m_Voltmeter = nullptr;
+    Calibrator* m_Calibrator = nullptr;
+    Voltmeter* m_Voltmeter = nullptr;
 
     //выбор процедуры поверки
     //id - 300 - "inaccuracy DC -> AC, 1 kHz"
     // id - 301 - "frequency verification"
     uint m_OperationNumber;
 
-    //параметры введенные пользователем
-    //TypeDev,TypeRefDev,Volt
 
     //тип поверяемого преобразователя
     uint m_TypeDev; //2 - squa ; 1 - line

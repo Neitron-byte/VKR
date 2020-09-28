@@ -23,7 +23,8 @@ DialogNumCycles::~DialogNumCycles()
 void DialogNumCycles::on_pushButton_Next_clicked()
 {
     emit signalSetNum(ui->spinBox_NumCycles->value());
-    emit signalStartWork();
+
+    emit signalshowInputCor();
     this->hide();
 }
 

@@ -14,6 +14,8 @@
 #include "Data.h"
 #include "algoritm.h"
 #include "dialognumcycles.h"
+#include "dialogcorrectref.h"
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -58,7 +60,8 @@ signals:
     void signalSaveData(const float, const QString , const QString ,const QString );
     //cигнал на сохранение данных в алгоритм
     void signalSaveDataDevice(uint,uint,const float);
-
+    //cигнал на введение поправки
+    void Correct(float);
 
 
 
@@ -74,7 +77,9 @@ public slots:
     void slotLockStart();
     void slotUnLockStart();
     void EnterNumberCycles();
-    // QObject interface
+    // введние поправки
+    void slotInputCorrect();
+
 
 private:
     Ui::MainWindow *ui;
@@ -83,6 +88,7 @@ private:
     DeviceDialog* m_DeviceDialog = nullptr;//Окно подключения к приборам
     ModeSelectialog* m_ModeSelectDialog = nullptr;//окно выбора операции поверки
     DialogNumCycles* m_DialogNumCycles = nullptr;//окно задания количества циклов измерений
+    DialogCorrectRef* m_DialogCorrectRef = nullptr;//окно введения поправки
 
     //отдельный поток для взаимодействия с приборами
     QThread* m_Thread = nullptr;
@@ -106,6 +112,8 @@ private:
     //алгоритм поверки
     algoritm* m_algoritm = nullptr;
 
+
+    QList<QDialog*> m_listDialog;
 
 
 protected:
